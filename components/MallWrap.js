@@ -8,15 +8,11 @@ function MallWrap({ children }) {
 
 	return (
 		<Layout>
-			<Header style={{
-        position: 'fixed',
-        zIndex: 1,
-        width: '100%',
-      }}>
+			<Header>
 				<div>
 					<Menu
 						theme="light"
-						mode="horizontal"
+						// mode="horizontal"
 						defaultSelectedKeys={['3']}
 						items={[
 							{
