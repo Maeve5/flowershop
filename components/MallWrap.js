@@ -3,16 +3,13 @@ import { Layout, Menu } from 'antd';
 const { Header, Sider, Content, Footer } = Layout;
 
 function MallWrap({ children }) {
-
-
-
 	return (
 		<Layout>
 			<Header>
 				<div>
 					<Menu
 						theme="light"
-						// mode="horizontal"
+						mode="horizontal"
 						defaultSelectedKeys={['3']}
 						items={[
 							{

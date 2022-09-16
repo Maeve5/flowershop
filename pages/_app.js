@@ -2,8 +2,6 @@ import Head from 'next/head'
 import { ConfigProvider } from 'antd';
 import koKR from 'antd/lib/locale/ko_KR';
 
-import '../styles/globals.css'
-
 function MyApp({ Component, pageProps }) {
 	return (
 		<>

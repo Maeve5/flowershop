@@ -9,7 +9,7 @@ function Home() {
 	
 	return (
 		<MallWrap>
-			<div>		
+			<div>
 			</div>
 		</MallWrap>
 	)
@@ -19,10 +19,10 @@ export default React.memo(Home);
 
 export async function getServerSideProps() {
 	try {
-		const res = await API.get('/v1/admin/product');
+		const res = await API.get('/v1/shop/product');
 		if (res.status === 200) {
-			console.log('res >> ', res);
-			const data = await res.json();
+			console.log('res >> ', res.data.dataSet);
+			const data = await res.data.dataSet;
 			return { props : { data }}
 		}
 		return { props : { data }}
