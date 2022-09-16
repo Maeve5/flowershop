@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import MallWrap from '../components/MallWrap';
 // import styles from '../styles/Home.module.css';
 import API from '../modules/api';
-import axios from 'axios';
 
 function Home() {
 
