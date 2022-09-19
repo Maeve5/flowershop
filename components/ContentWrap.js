@@ -1,27 +1,43 @@
 import React from 'react';
 import { Layout, Space, Input, Menu } from 'antd';
+import { ShoppingCartOutlined } from '@ant-design/icons';
 const { Header, Content, Footer } = Layout;
 const { Search } = Input;
 
-function MallWrap({ children }) {
+function ContentWrap({ children }) {
 
 	return (
 		<>
 			<Layout style={{ background : 'white' }}>
 				<div>
 					<div className='top-wrap'>
-						<div className='top-rightside-wrap'></div>
+						<div className='top-rightside-wrap'>
+						
+						</div>
 						<div className='top-home-wrap'>
-							<Space direction="vertical">
-								<Search
-									placeholder="input search text"
-									allowClear
-									// onSearch={onSearch}
+							<div></div>
+							<div className='search-wrap'>
+								<Space direction="vertical">
+									<Search
+										placeholder="input search text"
+										allowClear
+										// onSearch={onSearch}
+										bordercolor='rgb(0, 122, 79)'
+										style={{
+											width: 360,
+										}}
+										size='large'
+									/>
+								</Space>
+							</div>
+							<div className='icon-wrap'>
+								<ShoppingCartOutlined
 									style={{
-										width: 400,
+										fontSize: '200%',
+										color: 'rgb(0, 122, 79)'
 									}}
 								/>
-							</Space>
+							</div>
 						</div>
 					</div>
 					<div className='header-wrap'>
@@ -42,7 +58,7 @@ function MallWrap({ children }) {
 										},
 										{
 											key: '3',
-											label: '특가/이벤트',
+											label: '알뜰쇼핑',
 										},
 									]}
 								/>
@@ -60,14 +76,14 @@ function MallWrap({ children }) {
 					</div>
 				</Layout>
 				<div className='footer-wrap'>
-					<Footer>footer</Footer>
+					<Footer>Maeve Shop</Footer>
 				</div>
 			</Layout>
 
 			<style jsx>{`
 			.top-wrap { position: relative; }
-			.top-rightside-wrap { position: absolute; }
-			.top-home-wrap {}
+			.top-rightside-wrap { text-align: right; margin-right: 64px; height: 50px }
+			.top-home-wrap { display: flex; align-items: center; }
 			.header-wrap { position: fixed; zIndex: 1; width: 100%; }
 			.menu-wrap { float: right; width: 280px; }
 			.content-wrap { padding: 0 50px; margin-top: 64px; }
@@ -78,4 +94,4 @@ function MallWrap({ children }) {
 	);
 };
 
-export default MallWrap;
+export default ContentWrap;

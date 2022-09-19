@@ -8,7 +8,7 @@ function MyApp({ Component, pageProps }) {
 	return (
 		<>
 			<Head>
-				<title>꽃 쇼핑몰</title>
+				<title>꽃#</title>
 
 				<meta charSet='utf-8' />
 				<meta httpEquiv='X-UA-Compatible' content='IE=edge' />
