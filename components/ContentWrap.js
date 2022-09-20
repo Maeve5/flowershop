@@ -8,7 +8,7 @@ function ContentWrap({ children }) {
 
 	return (
 		<>
-			<Layout style={{ background : 'white' }}>
+			<Layout style={{ background : 'white', width : 1000, margin: 'auto' }} >
 				<div>
 					<div className='top-wrap'>
 						<div className='top-rightside-wrap'>
@@ -76,7 +76,7 @@ function ContentWrap({ children }) {
 					</div>
 				</Layout>
 				<div className='footer-wrap'>
-					<Footer>Maeve Shop</Footer>
+					<Footer>Flower Shop</Footer>
 				</div>
 			</Layout>
 
@@ -84,10 +84,10 @@ function ContentWrap({ children }) {
 			.top-wrap { position: relative; }
 			.top-rightside-wrap { text-align: right; margin-right: 64px; height: 50px }
 			.top-home-wrap { display: flex; align-items: center; }
-			.header-wrap { position: fixed; zIndex: 1; width: 100%; }
+			.header-wrap { zIndex: 1; width: 100%; }
 			.menu-wrap { float: right; width: 280px; }
-			.content-wrap { padding: 0 50px; margin-top: 64px; }
-			.children-wrap { padding: 24px; min-height: 380px; background-color: white; }
+			.content-wrap { margin-top: 64px; }
+			.children-wrap { min-height: 380px; background-color: white; }
 			.footer-wrap { text-align: center; }
 			`}</style>
 		</>
