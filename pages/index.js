@@ -1,30 +1,33 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import ContentWrap from '../components/ContentWrap';
 // import styles from '../styles/Home.module.css';
 import { Col, Divider, Row } from 'antd';
 import API from '../modules/api';
+import Router from 'next/router';
 
 function Home({ data }) {
 	const cols = [];
 
-
-	console.log(data.length);
-	
 	data.map((row) => {
 		const price = row.price.toLocaleString('ko-KR');
-		console.log('price', price);
+
 		cols.push(
 			<Col key={row.rowKey} span={5} style={{ margin: '32px 10px' }}>
 				{/* link router */}
-				<Image
-					src={row.imageUrl}
-					alt={row.imageUrl}
-					width={200}
-					height={280}
-				/>
-				<div>{row.productName}</div>
-				<div>{price}원</div>
+				<Link href={`/goods/${row.rowKey}`}>
+					<a>
+						<Image
+							src={row.imageUrl}
+							alt={row.imageUrl}
+							width={200}
+							height={240}
+						/>
+						<div>{row.productName}</div>
+						<div>{price}원</div>
+					</a>
+				</Link>
 			</Col>,
 		);
 	})
@@ -33,10 +36,16 @@ function Home({ data }) {
 		<ContentWrap>
 			<div>
 				<Divider orientation="left">전체상품</Divider>
-				<Row justify="space-evenly">
-					{cols}
-				</Row>
+				<div className='cols'>
+					<Row justify="space-evenly">
+							{cols}
+					</Row>
+				</div>
 			</div>
+
+			<style jsx>{`
+
+			`}</style>
 		</ContentWrap>
 	)
 }

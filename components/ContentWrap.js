@@ -1,41 +1,49 @@
 import React from 'react';
-import { Layout, Space, Input, Menu } from 'antd';
-import { ShoppingCartOutlined } from '@ant-design/icons';
+import { Layout, Space, Input, Menu, Button } from 'antd';
+import { HomeOutlined, ShoppingCartOutlined } from '@ant-design/icons';
+import router from 'next/router';
 const { Header, Content, Footer } = Layout;
 const { Search } = Input;
 
 function ContentWrap({ children }) {
 
 	return (
-		<>
-			<Layout style={{ background : 'white', width : 1000, margin: 'auto' }} >
-				<div>
+		<div className='layout'>
+			<Layout style={{ background: 'white' }}>
+				<div className='top-layout-wrap'>
 					<div className='top-wrap'>
 						<div className='top-rightside-wrap'>
-						
+							회원가입 로그인 고객센터
 						</div>
 						<div className='top-home-wrap'>
-							<div></div>
+							<div className='home-btn'>
+								<Button
+									type='text'
+									size='large'
+									style={{color: 'rgb(0, 122, 79)', backgroundColor: 'white'}}
+									icon={<HomeOutlined />}
+									onClick={() => router.push('/')}
+								/>
+							</div>
 							<div className='search-wrap'>
 								<Space direction="vertical">
 									<Search
-										placeholder="input search text"
+										placeholder="검색어를 입력해 주세요."
 										allowClear
 										// onSearch={onSearch}
-										bordercolor='rgb(0, 122, 79)'
-										style={{
-											width: 360,
-										}}
 										size='large'
+										bordercolor='rgb(0, 122, 79)'
+										style={{width: 360}}
 									/>
 								</Space>
 							</div>
 							<div className='icon-wrap'>
-								<ShoppingCartOutlined
-									style={{
-										fontSize: '200%',
-										color: 'rgb(0, 122, 79)'
-									}}
+								<Button
+									type='text'
+									size='large'
+									style={{color: 'rgb(0, 122, 79)', backgroundColor: 'white'}}
+									icon={<ShoppingCartOutlined />}
+									onClick={() => router.push('/cart')}
 								/>
 							</div>
 						</div>
@@ -66,31 +74,41 @@ function ContentWrap({ children }) {
 						</Header>
 					</div>
 				</div>
-				<Layout style={{ background : 'white' }}>
-					<div className='content-wrap'>
-						<Content>
-							<div className='children-wrap'>
-								{children}
-							</div>
-						</Content>
-					</div>
-				</Layout>
+				<div className='content-layout-wrap'>
+					<Layout style={{ background : 'white' }}>
+						<div className='content-wrap'>
+							<Content>
+								<div className='children-wrap'>
+									{children}
+								</div>
+							</Content>
+						</div>
+					</Layout>
+				</div>
 				<div className='footer-wrap'>
 					<Footer>Flower Shop</Footer>
 				</div>
 			</Layout>
 
 			<style jsx>{`
+			.layout { width: 1000px; margin: auto; }
+
+			.top-layout-wrap { position: sticky; top: 0; background-color: white; }
 			.top-wrap { position: relative; }
-			.top-rightside-wrap { text-align: right; margin-right: 64px; height: 50px }
-			.top-home-wrap { display: flex; align-items: center; }
-			.header-wrap { zIndex: 1; width: 100%; }
+			.top-rightside-wrap { text-align: right; margin: 0 64px 30px 0; height: 50px; line-height: 50px; }
+			.top-home-wrap { display: flex; align-items: center; margin: 20px; }
+			.home-btn { flex: 1; }
+			.search-wrap { flex: 1; }
+			.icon-wrap { text-align: right; flex: 1; }
+			.header-wrap { width: 100%; }
 			.menu-wrap { float: right; width: 280px; }
+
 			.content-wrap { margin-top: 64px; }
 			.children-wrap { min-height: 380px; background-color: white; }
+
 			.footer-wrap { text-align: center; }
 			`}</style>
-		</>
+		</div>
 	);
 };
 
