@@ -39,9 +39,9 @@ function cart({ data }) {
 						<div className='cart-product'>
 							{data[0].productName}
 						</div>
-						<div className='cart-count-wrap'>
+						<div className='cart-amount-wrap'>
 							<Button size='small'>-</Button>
-							<div className='count'>1</div>
+							<div className='amount'>1</div>
 							<Button size='small'>+</Button>
 						</div>
 						<div className='cart-sum-wrap'>
@@ -72,13 +72,13 @@ function cart({ data }) {
 						</div>
 					</div>
 					<div className='order-sum-wrap'>
-						<div className='sum-count'>
+						<div className='sum-amount'>
 							<div>상품금액</div>
 							<div>{price} 원</div>
 						</div>
 						<div className='sum-delivery'>
 							<div>배송비</div>
-							<div>+3,000 원</div>
+							<div>+ 3,000 원</div>
 						</div>
 						<div className='sum-charge'>
 							<div>결제예정금액</div>
@@ -103,8 +103,8 @@ function cart({ data }) {
 			.cart-list { display: flex; align-items: center; border-top: 1px solid #aaa; border-bottom: 1px solid #eee; padding: 10px 0; }
 			.cart-image { margin-right: 20px; }
 			.cart-product { width: 320px; }
-			.cart-count-wrap { display: flex; width: 120px; justify-content: center; }
-			.count { width: 52px; height: 24px; text-align: center; }
+			.cart-amount-wrap { display: flex; width: 120px; justify-content: center; }
+			.amount { width: 52px; height: 24px; text-align: center; }
 			.cart-sum-wrap { display: flex; width: 100px; justify-content: flex-end; margin-right: 8px; font-weight: 700; }
 
 			.order-wrap { width: 270px; padding-top: 56px; }
@@ -114,7 +114,7 @@ function cart({ data }) {
 			.address-wrap { padding-top: 12px; }
 
 			.order-sum-wrap { background-color: rgb(250, 250, 250); border: 1px solid #eee; padding: 20px; }
-			.sum-count { display: flex; justify-content: space-between; }
+			.sum-amount { display: flex; justify-content: space-between; }
 			.sum-delivery { display: flex; justify-content: space-between; padding-top: 12px; }
 			.sum-charge { display: flex; justify-content: space-between; padding-top: 20px; margin-top: 12px; border-top: 1px solid #eee; }
 

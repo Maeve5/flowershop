@@ -7,13 +7,19 @@ const { Search } = Input;
 
 function ContentWrap({ children }) {
 
+	const onSearch = (e) => {
+		alert(e);
+	}
+
 	return (
 		<div className='layout'>
 			<Layout style={{ background: 'white' }}>
 				<div className='top-layout-wrap'>
 					<div className='top-wrap'>
 						<div className='top-rightside-wrap'>
-							회원가입 로그인 고객센터
+							<div className='newuser'>회원가입</div>
+							<div className='login'>로그인</div>
+							<div className='usercenter'>고객센터</div>
 						</div>
 						<div className='top-home-wrap'>
 							<div className='home-btn'>
@@ -30,7 +36,7 @@ function ContentWrap({ children }) {
 									<Search
 										placeholder="검색어를 입력해 주세요."
 										allowClear
-										// onSearch={onSearch}
+										onSearch={onSearch}
 										size='large'
 										bordercolor='rgb(0, 122, 79)'
 										style={{width: 360}}
@@ -95,7 +101,8 @@ function ContentWrap({ children }) {
 
 			.top-layout-wrap { position: sticky; top: 0; background-color: white; }
 			.top-wrap { position: relative; }
-			.top-rightside-wrap { text-align: right; margin: 0 64px 30px 0; height: 50px; line-height: 50px; }
+			.top-rightside-wrap { display: flex; justify-content: flex-end; margin: 0 64px 30px 0; height: 50px; line-height: 50px; }
+			.top-rightside-wrap > div { margin-right: 8px; }
 			.top-home-wrap { display: flex; align-items: center; margin: 20px; }
 			.home-btn { flex: 1; }
 			.search-wrap { flex: 1; }
