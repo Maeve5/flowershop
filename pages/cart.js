@@ -1,14 +1,75 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ContentWrap from '../components/ContentWrap';
 import API from '../modules/api';
-import Image from 'next/image';
+import Link from 'next/link';
 import { Button } from 'antd';
 import { CloseOutlined, EnvironmentOutlined } from '@ant-design/icons';
-// import checkLined from '../public/check-filled.svg';
+import Amount from '../components/Amount';
+import Checkbox from '../components/Checkbox';
 
-function cart({ data }) {
-	const price = data[0].price.toLocaleString('ko-KR');
-	const sumPrice = (data[0].price+3000).toLocaleString('ko-KR');
+function cart({ dataSet }) {
+
+	const [data, setData] = useState(dataSet);
+	
+	// 상품금액 합계
+	let total = 0;
+	data.map((row) => {
+		total += (row.price*row.amount);
+	})
+	// 가격 콤마 삽입
+	let price = total.toLocaleString('ko-KR');
+	let totalPrice = (total + 3000).toLocaleString('ko-KR');
+
+	// 변경사항 조회
+	const getData = async () => {
+		try {
+			const res = await API.get('/v1/shop/cart');
+			if (res.status === 200) {
+				// console.log('res >> ', res.data.dataSet);
+				setData(res.data.dataSet);
+				return data;
+			}
+		}
+		catch (e) {
+			console.log(e);
+		}
+	}
+
+	useEffect(() => {
+		getData();
+	}, []);
+
+	// 수량 변경
+	const onChangeAmount = async (cartKey, amount) => {
+		// patch
+		console.log(cartKey, amount);
+		const res = await API.patch(`/v1/shop/cart/${cartKey}`, {
+			amount: amount
+		})
+		.then((response) => {
+			// console.log('res data >> ', response);
+			getData();
+		})
+		.catch((e) => {
+			console.log('e >> ', e);	
+		});
+	}
+
+	// 항목 삭제
+	const onDelete = async (cartKey) => {
+		// delete
+		try {
+			const res = await API. delete(`/v1/shop/cart/${cartKey}`);
+			if (res.status === 200) {
+				alert('삭제되었습니다.');
+				getData();
+			}
+		}
+		catch (e) {
+			alert(e.message);
+		    console.log('e >> ', e);
+		}
+	}
 
 	return (
 		<ContentWrap>
@@ -16,47 +77,67 @@ function cart({ data }) {
 			<div className='content-wrap'>
 				<div className='cart-wrap'>
 					<div className='cart-select'>
-						<div className='selete-all'>
-							<label htmlFor='checker'>
-								<input type='checkbox' id='checker' />
-								전체선택
-							</label>
+						<div className='checkbox'>
+							<Checkbox />
 						</div>
-						<Button type='text'>선택삭제</Button>
+						<Button
+							type='text'
+							style={{paddingLeft: '1%'}}
+							onClick
+						>전체선택</Button>
+						<Button
+							type='text'
+							onClick
+						>선택삭제</Button>
 					</div>
-					<div className='cart-list'>
-						<label htmlFor='checker'>
-							<input type='checkbox' id='checker' />
-						</label>
-						<div className='cart-image'>
-							<Image
-								src={data[0].imageUrl}
-								alt={data[0].imageUrl}
-								width={72}
-								height={84}
-							/>
-						</div>
-						<div className='cart-product'>
-							{data[0].productName}
-						</div>
-						<div className='cart-amount-wrap'>
-							<Button size='small'>-</Button>
-							<div className='amount'>1</div>
-							<Button size='small'>+</Button>
-						</div>
-						<div className='cart-sum-wrap'>
-							<div className='sum'>{price}</div>
-							<div className='sum-won'>원</div>
-						</div>
-						<Button type='text' size='small' icon={<CloseOutlined />} />
-					</div>
+					{data.map((row) => {
+						const sum = (row.price*row.amount).toLocaleString('ko-KR');
+						return (
+							<div key={row.productKey} className='cart-list'>
+								<div className='checkbox'>
+									<Checkbox />
+								</div>
+								{/* <label htmlFor='checker'>
+									<input type='checkbox' id='checker' />
+								</label> */}
+								<div className='cart-image'>
+									<img
+										src={row.imageUrl}
+										alt={row.imageUrl}
+										width={80}
+									/>
+								</div>
+								<Link href={`/goods/${row.productKey}`}>
+									<a className='cart-product'>
+										{row.productName}
+									</a>
+								</Link>
+								<div className='cart-amount-wrap'>
+									<Amount amount={row.amount} onClickAmount={(amount) => onChangeAmount(row.cartKey, amount)} />
+									{/* props : amount, onClickAmount
+										Amount 컴포넌트에 props를 넘겨주고, 컴포넌트에서 바뀐 amount값을 (amount)에 받아와서 onChangeAmount함수를 실행
+										onChangeAmount에서 amount값을 patch하면 API의 amount값이 변경! API에서 다시 get 하면 row.amount 변경
+										위 동작 반복
+									*/}
+									{/* <Button size='small'>-</Button>
+									<div className='amount'>{row.amount}</div>
+									<Button size='small'>+</Button> */}
+								</div>
+								<div className='cart-sum-wrap'>
+									<div className='sum'>{sum}</div>
+									<div className='sum-won'>원</div>
+								</div>
+								<Button type='text' size='small' icon={<CloseOutlined />} onClick={() => onDelete(row.cartKey)} />
+							</div>
+						)
+					})}
 					<div className='cart-select'>
 						<div className='selete-all'>
-							<label htmlFor='checker'>
-								<input type='checkbox' id='checker' />
-								전체선택
-							</label>
+							<div className='checkbox'>
+								<Checkbox />
+							</div>
 						</div>
+						<Button type='text' style={{paddingLeft: '1%'}}>전체선택</Button>
 						<Button type='text'>선택삭제</Button>
 					</div>
 				</div>
@@ -68,7 +149,7 @@ function cart({ data }) {
 						</div>
 						<div className='address-wrap'>
 							<p>주소지</p>
-							<Button type='primary' ghost block>배송지 설정</Button>
+							<Button type='primary' ghost block>주소 검색</Button>
 						</div>
 					</div>
 					<div className='order-sum-wrap'>
@@ -82,7 +163,7 @@ function cart({ data }) {
 						</div>
 						<div className='sum-charge'>
 							<div>결제예정금액</div>
-							<div>{sumPrice} 원</div>
+							<div>{totalPrice} 원</div>
 						</div>
 					</div>
 					<div className='order-button-wrap'>
@@ -93,16 +174,16 @@ function cart({ data }) {
 
 			<style jsx>{`
 			h2 { font-size: 28px; text-align: center; padding-bottom: 40px; }
-			.content-wrap { display: flex; justify-content: space-between; font-size: 16px; padding-bottom: 80px; }
+			.content-wrap { display: flex; justify-content: space-between; font-size: 16px; }
 
 			.cart-wrap { width: 700px; }
-			.cart-select { display: flex; align-items: center; padding: 12px; }
-			.select-all {  }
+			.cart-select { display: flex; align-items: center; padding: 12px; border-bottom: 1px solid #aaa; }
 			label { display: flex; align-items: center; font-size: 14px }
 			input { width: 1.5em; height: 1.5em; margin-right: 10px; appearance: none; outline: none; background: white no-repeat center center; background-image: url('../public/check-lined.svg'); }
-			.cart-list { display: flex; align-items: center; border-top: 1px solid #aaa; border-bottom: 1px solid #eee; padding: 10px 0; }
-			.cart-image { margin-right: 20px; }
-			.cart-product { width: 320px; }
+			.cart-list { display: flex; align-items: center; border-bottom: 1px solid #eee; padding: 8px 12px; }
+			.cart-image { margin: 0 1%; }
+			a { color: rgba(0, 0, 0, 0.85); }
+			.cart-product { width: 44%; margin-left: 1%; }
 			.cart-amount-wrap { display: flex; width: 120px; justify-content: center; }
 			.amount { width: 52px; height: 24px; text-align: center; }
 			.cart-sum-wrap { display: flex; width: 100px; justify-content: flex-end; margin-right: 8px; font-weight: 700; }
@@ -128,17 +209,16 @@ export default React.memo(cart);
 
 export const getServerSideProps = async () => {
 	try {
-		const res = await API.get(`/v1/shop/product`);
+		const res = await API.get('/v1/shop/cart');
 		if (res.status === 200) {
 			console.log('res >> ', res.data.dataSet);
-			// console.log('res.token >> ', res);
-			const data = await res.data.dataSet;
-			return { props : { data }}
+			const dataSet = await res.data.dataSet;
+			return { props: { dataSet } }
 		}
-		return { props : { data }}
+		return { props: { dataSet } }
 	}
 	catch (e) {
 		console.log('e >> ', e);
-		return { props : { }}
+		return { props: {} }
 	}
 }

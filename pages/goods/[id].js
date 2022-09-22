@@ -1,73 +1,37 @@
 import React, { useState } from 'react';
 import ContentWrap from '../../components/ContentWrap';
 import API from '../../modules/api';
-import Image from 'next/image';
 import { Button, Modal } from 'antd';
 import router from 'next/router';
+import Amount from '../../components/Amount';
 
 function Post({ data, images, details }) {
-	const price = data.price.toLocaleString('ko-KR');
-	const image = [];
-	const detail = [];
-	const [amount, setAmount] = useState(1);
 	const [isModalOpen, setIsModalOpen] = useState(false);
-
-	// 상세설명란 이미지
-	images.map((row) => {
-		image.push(
-			<div key={row.rowKey} className='image' style={{width: '100%', height: '600px', position: 'relative'}}>
-				<Image
-					src={row.large}
-					alt={row.large}
-					layout='fill'
-					objectFit='contain'
-				/>
-			</div>,
-		)
-	})
-
-	details.map((row) => {
-		detail.push(
-			<div key={row.rowKey} className='image' style={{width: '100%', height: '100%', position: 'relative'}}>
-				<Image
-					src={row.large}
-					alt={row.large}
-					layout='fill'
-					objectFit='contain'
-				/>
-			</div>,
-		)
-	})
-
-	// 수량 증감
-	const handleDecresement = () => {
-		setAmount(amount-1);
+	const [amount, setAmount] = useState(1);
+	const onClickAmount = (amount) => {
+		setAmount(amount);
 	}
-	
-	const handleIncresement = () => {
-		setAmount(amount+1);
-	}
+	const price = (data.price * amount).toLocaleString('ko-KR');
 
 	// 장바구니 추가
-	const showModal = () => {
+	const showModal = async () => {
 		setIsModalOpen(true);
-		console.log('rowKey >>', data.rowKey);
-		console.log('amount >>', amount);
-		
+		const res = await API.post('/v1/shop/cart', {
+			productKey: data.rowKey,
+			cartQty: amount
+		})
+			.then((response) => {
+				console.log('res status >> ', response);
+				console.log('res data >> ', response.data);
+			})
+			.catch((e) => {
+				console.log('e >> ', e);
+			})
 	};
 
 	// 장바구니 이동 모달
 	const handleOk = async () => {
-		try {
-			API.post('/v1/shop/cart', {
-				productKey: data.rowKey,
-				cartQty: amount
-			})
-			router.push('/cart');
-		}
-		catch (e) {
-			console.log('e >> ', e);
-		}
+		router.push('/cart');
 	};
 
 	const handleCancel = () => {
@@ -78,7 +42,7 @@ function Post({ data, images, details }) {
 		<ContentWrap>
 			<article>
 				<div>
-					<Image
+					<img
 						src={data.imageUrl}
 						alt={data.imageUrl}
 						width={480}
@@ -111,17 +75,7 @@ function Post({ data, images, details }) {
 						<dl className='line'>
 							<dt>구매수량</dt>
 							<div className='amount-wrap'>
-								<Button
-									size='small'
-									onClick={handleDecresement}
-									// disabled={conditionD}
-								>-</Button>
-								<div className='amount'>{amount}</div>
-								<Button
-									size='small'
-									onClick={handleIncresement}
-									// disabled={conditionI}
-								>+</Button>
+								<Amount amount={amount} onClickAmount={onClickAmount} />
 							</div>
 						</dl>
 						<div>
@@ -165,12 +119,34 @@ function Post({ data, images, details }) {
 				</div>
 			</nav>
 			<div className='detail-wrap'>
-				{image}
-				{detail}
+				{images.map((row) => {
+					return (
+						<div key={row.rowKey} className='image'>
+							<img
+								className='detailImage'
+								src={row.large}
+								alt={row.large}
+								width={600}
+							/>
+						</div>
+					)
+				})}
+				{details.map((row) => {
+					return (
+						<div key={row.rowKey} className='image'>
+							<img
+								className='detailImage'
+								src={row.large}
+								alt={row.large}
+								width={600}
+							/>
+						</div>
+					)
+				})}
 			</div>
 
 			<style jsx>{`
-			article { display: flex; justify-content: space-between; }
+			article { display: flex; justify-content: space-around; }
 			.summary-wrap { width: 440px; align-items: center; }
 			.product { font-size: 20px; font-weight: 500; padding-top: 16px; }
 			.line { margin: 0; border-bottom: 1px solid #eee; display: flex; align-items: center; }
@@ -181,16 +157,16 @@ function Post({ data, images, details }) {
 			dt { flex: 1; }
 			dd { flex: 2; margin: 0; }
 			.amount-wrap { flex: 2; display: flex; }
-			.amount { width: 60px; height: 24px; text-align: center; }
 			.sum-wrap { display: flex; justify-content: flex-end; align-items: baseline; padding-top: 32px; }
 			.sum { font-size: 36px; font-weight: 700; padding: 0 4px; }
 			.sum-won { font-size: 20px; font-weight: 600; padding-right: 4px; }
 			.cart-btn { padding-top: 12px; }
 
-			nav { display: flex; justify-content: space-between; text-align: center; line-height: 50px; margin-top: 80px; position: sticky; top: 210px; }
+			nav { display: flex; justify-content: space-between; text-align: center; line-height: 50px; margin-top: 80px; position: sticky; top: 204.14px; background-color: white; }
 			.tap { flex: 1; height: 50px; border:1px solid #eee; font-size: 16px; }
-			.detail-wrap { display: flex; margin: 10px 0; flex-direction: column; max-width: 50%; margin: 40px auto; }
-			.image { width: 100%; height: 100%; position: relative; }
+			.detail-wrap { display: flex; flex-direction: column; justify-content: space-around; max-width: 80%; margin: 40px auto; }
+			.image { display: flex; text-align: center; }
+			.detailImage { display: block; margin: 40px auto; }
 			`}</style>
 		</ContentWrap>
 	);
@@ -202,16 +178,15 @@ export const getServerSideProps = async ({ params }) => {
 	try {
 		const res = await API.get(`/v1/shop/product/${params.id}`);
 		if (res.status === 200) {
-			// console.log('res >> ', res.data.dataSet);
 			console.log('res.token >> ', res.data);
 			const datas = await res.data;
 			const { data, images, details } = datas;
-			return { props : { data, images, details }}
+			return { props: { data, images, details } }
 		}
-		return { props : { data, images, details }}
+		return { props: { data, images, details } }
 	}
 	catch (e) {
 		console.log('e >> ', e);
-		return { props : { }}
+		return { props: {} }
 	}
 }

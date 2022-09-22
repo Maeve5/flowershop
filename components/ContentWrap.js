@@ -6,7 +6,7 @@ const { Header, Content, Footer } = Layout;
 const { Search } = Input;
 
 function ContentWrap({ children }) {
-
+	// 검색
 	const onSearch = (e) => {
 		alert(e);
 	}
@@ -61,6 +61,7 @@ function ContentWrap({ children }) {
 									theme='light'
 									mode='horizontal'
 									defaultSelectedKeys={['3']}
+									style={{border: 'none'}}
 									items={[
 										{
 											key: '1',
@@ -76,6 +77,26 @@ function ContentWrap({ children }) {
 										},
 									]}
 								/>
+								{/* <Menu theme='light' mode='horizontal'>
+									<Menu.Item key={['1']}>
+										{[{
+											key: '1',
+											label: '신상품'
+										}]}
+									</Menu.Item>
+									<Menu.Item key={['2']}>
+										{[{
+											key: '2',
+											label: '베스트'
+										}]}
+									</Menu.Item>
+									<Menu.Item key={['3']}>
+										{[{
+											key: '3',
+											label: '알뜰쇼핑'
+										}]}
+									</Menu.Item>
+								</Menu> */}
 							</div>
 						</Header>
 					</div>
@@ -83,7 +104,7 @@ function ContentWrap({ children }) {
 				<div className='content-layout-wrap'>
 					<Layout style={{ background : 'white' }}>
 						<div className='content-wrap'>
-							<Content>
+							<Content style={{ background : 'white' }}>
 								<div className='children-wrap'>
 									{children}
 								</div>
@@ -97,9 +118,10 @@ function ContentWrap({ children }) {
 			</Layout>
 
 			<style jsx>{`
-			.layout { width: 1000px; margin: auto; }
+			* { background-color: white; }
+			.layout { margin: auto; }
 
-			.top-layout-wrap { position: sticky; top: 0; background-color: white; }
+			.top-layout-wrap { position: sticky; top: 0; margin: 0; background-color: white; z-index: 100; border-bottom: 1px solid #eee; box-shadow: 0px 1px 10px #eee; }
 			.top-wrap { position: relative; }
 			.top-rightside-wrap { display: flex; justify-content: flex-end; margin: 0 64px 30px 0; height: 50px; line-height: 50px; }
 			.top-rightside-wrap > div { margin-right: 8px; }
@@ -107,10 +129,9 @@ function ContentWrap({ children }) {
 			.home-btn { flex: 1; }
 			.search-wrap { flex: 1; }
 			.icon-wrap { text-align: right; flex: 1; }
-			.header-wrap { width: 100%; }
-			.menu-wrap { float: right; width: 280px; }
+			.menu-wrap { margin: 0 auto; padding-left: 56px; width: 320px; }
 
-			.content-wrap { margin-top: 64px; }
+			.content-wrap { margin: 64px auto; width: 1000px }
 			.children-wrap { min-height: 380px; background-color: white; }
 
 			.footer-wrap { text-align: center; }
