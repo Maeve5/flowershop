@@ -26,7 +26,7 @@ function ContentWrap({ children }) {
 								<Button
 									type='text'
 									size='large'
-									style={{color: 'rgb(0, 122, 79)', backgroundColor: 'white'}}
+									style={{color: 'rgb(0, 122, 79)', backgroundColor: 'none'}}
 									icon={<HomeOutlined />}
 									onClick={() => router.push('/')}
 								/>
@@ -47,7 +47,7 @@ function ContentWrap({ children }) {
 								<Button
 									type='text'
 									size='large'
-									style={{color: 'rgb(0, 122, 79)', backgroundColor: 'white'}}
+									style={{color: 'rgb(0, 122, 79)', backgroundColor: 'none'}}
 									icon={<ShoppingCartOutlined />}
 									onClick={() => router.push('/cart')}
 								/>
@@ -121,7 +121,7 @@ function ContentWrap({ children }) {
 			* { background-color: white; }
 			.layout { margin: auto; }
 
-			.top-layout-wrap { position: sticky; top: 0; margin: 0; background-color: white; z-index: 100; border-bottom: 1px solid #eee; box-shadow: 0px 1px 10px #eee; }
+			.top-layout-wrap { position: sticky; top: 0; margin: 0; z-index: 100; border-bottom: 1px solid #eee; box-shadow: 0px 1px 10px #eee; }
 			.top-wrap { position: relative; }
 			.top-rightside-wrap { display: flex; justify-content: flex-end; margin: 0 64px 30px 0; height: 50px; line-height: 50px; }
 			.top-rightside-wrap > div { margin-right: 8px; }
@@ -132,7 +132,7 @@ function ContentWrap({ children }) {
 			.menu-wrap { margin: 0 auto; padding-left: 56px; width: 320px; }
 
 			.content-wrap { margin: 64px auto; width: 1000px }
-			.children-wrap { min-height: 380px; background-color: white; }
+			.children-wrap { min-height: 380px; }
 
 			.footer-wrap { text-align: center; }
 			`}</style>

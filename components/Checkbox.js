@@ -1,16 +1,26 @@
 import React from 'react';
 import { Button } from 'antd';
-import { CheckCircleOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, CheckCircleFilled } from '@ant-design/icons';
 
-function Checkbox() {
+function Checkbox({ checked, onClickCheck}) {
+	
+	const onClick = () => {
+		console.log(checked === 'Y');
+		if (checked === 'Y') {
+			onClickCheck(checked = 'N');
+		}
+		else {
+			onClickCheck(checked = 'Y');
+		}
+	}
 
 	return (
-		<Button
+			<Button
 			type='text'
-			style={{ color: 'rgb(0, 122, 79)', backgroundColor: 'white'}}
-			icon={<CheckCircleOutlined />}
-			onClick
-		/>
+			onClick={onClick}
+			style={{ color: checked === 'Y' ? 'rgb(0, 122, 79)' : '#aaa', backgroundColor: 'none'}}
+			icon={checked === 'Y' ? <CheckCircleFilled /> : <CheckCircleOutlined />}
+			/>
 	);
 };
 

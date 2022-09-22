@@ -39,10 +39,25 @@ function cart({ dataSet }) {
 		getData();
 	}, []);
 
+	// checked 변경
+	const onChangeCheck = async (cartKey, checked) => {
+		// post
+		const res = await API.post(`/v1/shop/cart/check/${cartKey}`, {
+			checked: checked === 'N' ? 'N' : 'Y'
+		})
+		.then((response) => {
+			// console.log('res data >> ', response);
+			getData();
+		})
+		.catch((e) => {
+			console.log('e >> ', e)
+		})
+	}
+
 	// 수량 변경
 	const onChangeAmount = async (cartKey, amount) => {
 		// patch
-		console.log(cartKey, amount);
+		// console.log(cartKey, amount);
 		const res = await API.patch(`/v1/shop/cart/${cartKey}`, {
 			amount: amount
 		})
@@ -95,7 +110,7 @@ function cart({ dataSet }) {
 						return (
 							<div key={row.productKey} className='cart-list'>
 								<div className='checkbox'>
-									<Checkbox />
+									<Checkbox checked={row.isChecked} onClickCheck={(checked) => onChangeCheck(row.cartKey, checked)}/>
 								</div>
 								{/* <label htmlFor='checker'>
 									<input type='checkbox' id='checker' />
@@ -127,7 +142,7 @@ function cart({ dataSet }) {
 									<div className='sum'>{sum}</div>
 									<div className='sum-won'>원</div>
 								</div>
-								<Button type='text' size='small' icon={<CloseOutlined />} onClick={() => onDelete(row.cartKey)} />
+								<Button type='text' size='small' icon={<CloseOutlined style={{color: '#aaa'}} />} onClick={() => onDelete(row.cartKey)} />
 							</div>
 						)
 					})}
@@ -161,9 +176,9 @@ function cart({ dataSet }) {
 							<div>배송비</div>
 							<div>+ 3,000 원</div>
 						</div>
-						<div className='sum-charge'>
+						<div className='sum-price'>
 							<div>결제예정금액</div>
-							<div>{totalPrice} 원</div>
+							<div className='total-price'>{totalPrice} 원</div>
 						</div>
 					</div>
 					<div className='order-button-wrap'>
@@ -183,7 +198,7 @@ function cart({ dataSet }) {
 			.cart-list { display: flex; align-items: center; border-bottom: 1px solid #eee; padding: 8px 12px; }
 			.cart-image { margin: 0 1%; }
 			a { color: rgba(0, 0, 0, 0.85); }
-			.cart-product { width: 44%; margin-left: 1%; }
+			.cart-product { width: 44%; margin-left: 1%; font-size: 16px; font-weight: 500; }
 			.cart-amount-wrap { display: flex; width: 120px; justify-content: center; }
 			.amount { width: 52px; height: 24px; text-align: center; }
 			.cart-sum-wrap { display: flex; width: 100px; justify-content: flex-end; margin-right: 8px; font-weight: 700; }
@@ -197,7 +212,8 @@ function cart({ dataSet }) {
 			.order-sum-wrap { background-color: rgb(250, 250, 250); border: 1px solid #eee; padding: 20px; }
 			.sum-amount { display: flex; justify-content: space-between; }
 			.sum-delivery { display: flex; justify-content: space-between; padding-top: 12px; }
-			.sum-charge { display: flex; justify-content: space-between; padding-top: 20px; margin-top: 12px; border-top: 1px solid #eee; }
+			.sum-price { display: flex; justify-content: space-between; align-items: center; padding-top: 20px; margin-top: 12px; border-top: 1px solid #eee; }
+			.total-price { font-size: 20px; font-weight: 700; }
 
 			.order-button-wrap { padding-top: 20px; }
 			`}</style>
