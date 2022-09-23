@@ -2,21 +2,23 @@ import React, { useState, useEffect } from 'react';
 import ContentWrap from '../components/ContentWrap';
 import API from '../modules/api';
 import Link from 'next/link';
+import router from 'next/router';
 import { Button } from 'antd';
 import { CloseOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import Amount from '../components/Amount';
 import Checkbox from '../components/Checkbox';
 
 function cart({ dataSet }) {
-
 	const [data, setData] = useState(dataSet);
+	const [checked, setChecked] = useState('Y');
 	
 	// 상품금액 합계
 	let total = 0;
 	data.map((row) => {
 		total += (row.price*row.amount);
 	})
-	// 가격 콤마 삽입
+
+	// 가격에 콤마 삽입
 	let price = total.toLocaleString('ko-KR');
 	let totalPrice = (total + 3000).toLocaleString('ko-KR');
 
@@ -33,49 +35,73 @@ function cart({ dataSet }) {
 		catch (e) {
 			console.log(e);
 		}
-	}
+	};
 
 	useEffect(() => {
 		getData();
 	}, []);
 
-	// checked 변경
+	// checkbox 상태 변경
 	const onChangeCheck = async (cartKey, checked) => {
+		// 단일 선택, 전체 선택
+		const apiUrl = ``;
+		if (cartKey) {
+			apiUrl = `/v1/shop/cart/check/${cartKey}`;
+		}
+		else {
+			apiUrl = '/v1/shop/cart/check/all';
+		}
+
 		// post
-		const res = await API.post(`/v1/shop/cart/check/${cartKey}`, {
-			checked: checked === 'N' ? 'N' : 'Y'
-		})
-		.then((response) => {
-			// console.log('res data >> ', response);
-			getData();
-		})
-		.catch((e) => {
+		try {
+			console.log(apiUrl);
+			const res = await API.post(apiUrl, {
+				checked: checked === 'N' ? 'N' : 'Y'
+			});
+			if (res.status === 200) {
+				console.log('res data >> ', res);
+				setChecked(checked);
+				getData();
+			}
+		}
+		catch (e) {
 			console.log('e >> ', e)
-		})
-	}
+		}
+	};
 
 	// 수량 변경
 	const onChangeAmount = async (cartKey, amount) => {
 		// patch
-		// console.log(cartKey, amount);
-		const res = await API.patch(`/v1/shop/cart/${cartKey}`, {
-			amount: amount
-		})
-		.then((response) => {
-			// console.log('res data >> ', response);
-			getData();
-		})
-		.catch((e) => {
+		try {
+			const res = await API.patch(`/v1/shop/cart/${cartKey}`, {
+				amount: amount
+			});
+			if (res.status === 200) {
+				// console.log('res data >> ', response);
+				getData();
+			}
+		}
+		catch (e) {
 			console.log('e >> ', e);	
-		});
-	}
+		}
+	};
 
 	// 항목 삭제
 	const onDelete = async (cartKey) => {
+		// 단일 삭제, 선택 삭제
+		const apiUrl = ``;
+		if (cartKey) {
+			apiUrl = `/v1/shop/cart/${cartKey}`;
+		}
+		else {
+			apiUrl = '/v1/shop/cart/';
+		}
+
 		// delete
 		try {
-			const res = await API. delete(`/v1/shop/cart/${cartKey}`);
+			const res = await API.delete(apiUrl);
 			if (res.status === 200) {
+				// console.log('res >> ', res);
 				alert('삭제되었습니다.');
 				getData();
 			}
@@ -84,7 +110,7 @@ function cart({ dataSet }) {
 			alert(e.message);
 		    console.log('e >> ', e);
 		}
-	}
+	};
 
 	return (
 		<ContentWrap>
@@ -92,29 +118,18 @@ function cart({ dataSet }) {
 			<div className='content-wrap'>
 				<div className='cart-wrap'>
 					<div className='cart-select'>
-						<div className='checkbox'>
-							<Checkbox />
+						<div className='select-all'>
+							<Checkbox checked={checked} mode='all' onClickCheck={(checked) => onChangeCheck('', checked)} />
 						</div>
-						<Button
-							type='text'
-							style={{paddingLeft: '1%'}}
-							onClick
-						>전체선택</Button>
-						<Button
-							type='text'
-							onClick
-						>선택삭제</Button>
+						<Button type='text' onClick={() => onDelete()}>선택삭제</Button>
 					</div>
 					{data.map((row) => {
 						const sum = (row.price*row.amount).toLocaleString('ko-KR');
 						return (
 							<div key={row.productKey} className='cart-list'>
 								<div className='checkbox'>
-									<Checkbox checked={row.isChecked} onClickCheck={(checked) => onChangeCheck(row.cartKey, checked)}/>
+									<Checkbox checked={row.isChecked} onClickCheck={(checked) => onChangeCheck(row.cartKey, checked)} />
 								</div>
-								{/* <label htmlFor='checker'>
-									<input type='checkbox' id='checker' />
-								</label> */}
 								<div className='cart-image'>
 									<img
 										src={row.imageUrl}
@@ -129,14 +144,6 @@ function cart({ dataSet }) {
 								</Link>
 								<div className='cart-amount-wrap'>
 									<Amount amount={row.amount} onClickAmount={(amount) => onChangeAmount(row.cartKey, amount)} />
-									{/* props : amount, onClickAmount
-										Amount 컴포넌트에 props를 넘겨주고, 컴포넌트에서 바뀐 amount값을 (amount)에 받아와서 onChangeAmount함수를 실행
-										onChangeAmount에서 amount값을 patch하면 API의 amount값이 변경! API에서 다시 get 하면 row.amount 변경
-										위 동작 반복
-									*/}
-									{/* <Button size='small'>-</Button>
-									<div className='amount'>{row.amount}</div>
-									<Button size='small'>+</Button> */}
 								</div>
 								<div className='cart-sum-wrap'>
 									<div className='sum'>{sum}</div>
@@ -147,13 +154,11 @@ function cart({ dataSet }) {
 						)
 					})}
 					<div className='cart-select'>
-						<div className='selete-all'>
-							<div className='checkbox'>
-								<Checkbox />
-							</div>
+						<div className='checkbox'>
+							<Checkbox checked={checked} onClickCheck={(checked) => onChangeCheck('', checked)} />
 						</div>
-						<Button type='text' style={{paddingLeft: '1%'}}>전체선택</Button>
-						<Button type='text'>선택삭제</Button>
+						<Button type='text' style={{paddingLeft: '1%'}} onClick>전체선택</Button>
+						<Button type='text' onClick={() => onDelete()}>선택삭제</Button>
 					</div>
 				</div>
 				<div className='order-wrap'>
@@ -168,7 +173,7 @@ function cart({ dataSet }) {
 						</div>
 					</div>
 					<div className='order-sum-wrap'>
-						<div className='sum-amount'>
+						<div className='sum'>
 							<div>상품금액</div>
 							<div>{price} 원</div>
 						</div>
@@ -182,7 +187,7 @@ function cart({ dataSet }) {
 						</div>
 					</div>
 					<div className='order-button-wrap'>
-						<Button type='primary' block size='large'>주문하기</Button>
+						<Button type='primary' block size='large' onClick={() => router.push('/order')}>주문하기</Button>
 					</div>
 				</div>
 			</div>
@@ -193,8 +198,7 @@ function cart({ dataSet }) {
 
 			.cart-wrap { width: 700px; }
 			.cart-select { display: flex; align-items: center; padding: 12px; border-bottom: 1px solid #aaa; }
-			label { display: flex; align-items: center; font-size: 14px }
-			input { width: 1.5em; height: 1.5em; margin-right: 10px; appearance: none; outline: none; background: white no-repeat center center; background-image: url('../public/check-lined.svg'); }
+			.select-all { width: 100px; }
 			.cart-list { display: flex; align-items: center; border-bottom: 1px solid #eee; padding: 8px 12px; }
 			.cart-image { margin: 0 1%; }
 			a { color: rgba(0, 0, 0, 0.85); }
@@ -210,7 +214,7 @@ function cart({ dataSet }) {
 			.address-wrap { padding-top: 12px; }
 
 			.order-sum-wrap { background-color: rgb(250, 250, 250); border: 1px solid #eee; padding: 20px; }
-			.sum-amount { display: flex; justify-content: space-between; }
+			.sum { display: flex; justify-content: space-between; }
 			.sum-delivery { display: flex; justify-content: space-between; padding-top: 12px; }
 			.sum-price { display: flex; justify-content: space-between; align-items: center; padding-top: 20px; margin-top: 12px; border-top: 1px solid #eee; }
 			.total-price { font-size: 20px; font-weight: 700; }
@@ -227,7 +231,7 @@ export const getServerSideProps = async () => {
 	try {
 		const res = await API.get('/v1/shop/cart');
 		if (res.status === 200) {
-			console.log('res >> ', res.data.dataSet);
+			console.log('res >> ', res);
 			const dataSet = await res.data.dataSet;
 			return { props: { dataSet } }
 		}

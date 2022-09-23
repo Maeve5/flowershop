@@ -2,10 +2,9 @@ import React from 'react';
 import { Button } from 'antd';
 import { CheckCircleOutlined, CheckCircleFilled } from '@ant-design/icons';
 
-function Checkbox({ checked, onClickCheck}) {
-	
+function Checkbox({ checked, mode, onClickCheck }) {
+	// 체크 여부 변경
 	const onClick = () => {
-		console.log(checked === 'Y');
 		if (checked === 'Y') {
 			onClickCheck(checked = 'N');
 		}
@@ -15,12 +14,17 @@ function Checkbox({ checked, onClickCheck}) {
 	}
 
 	return (
-			<Button
+		<Button
 			type='text'
 			onClick={onClick}
-			style={{ color: checked === 'Y' ? 'rgb(0, 122, 79)' : '#aaa', backgroundColor: 'none'}}
-			icon={checked === 'Y' ? <CheckCircleFilled /> : <CheckCircleOutlined />}
-			/>
+			style={{ padding: 0 }}
+			icon={checked === 'Y'
+				? <CheckCircleFilled style={{ color: checked === 'Y' ? 'rgb(0, 122, 79)' : '#aaa', padding: '8%' }} />
+				: <CheckCircleOutlined style={{ color: checked === 'Y' ? 'rgb(0, 122, 79)' : '#aaa', padding: '8%' }}/>
+			}
+		>
+			{!mode ? '' : '전체선택'}
+		</Button>
 	);
 };
 

@@ -8,29 +8,33 @@ import Amount from '../../components/Amount';
 function Post({ data, images, details }) {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [amount, setAmount] = useState(1);
+	const price = (data.price * amount).toLocaleString('ko-KR');
+
+	// 수량 state 변경
 	const onClickAmount = (amount) => {
 		setAmount(amount);
-	}
-	const price = (data.price * amount).toLocaleString('ko-KR');
+	};
 
 	// 장바구니 추가
 	const showModal = async () => {
 		setIsModalOpen(true);
-		const res = await API.post('/v1/shop/cart', {
-			productKey: data.rowKey,
-			cartQty: amount
-		})
-			.then((response) => {
-				console.log('res status >> ', response);
-				console.log('res data >> ', response.data);
+		try {
+			const res = await API.post('/v1/shop/cart', {
+				productKey: data.rowKey,
+				cartQty: amount
 			})
-			.catch((e) => {
-				console.log('e >> ', e);
-			})
+			if (res.status === 200) {
+				console.log('res status >> ', res.status);
+				console.log('res data >> ', res.data);
+			}
+		}
+		catch (e) {
+			console.log('e >> ', e);
+		}
 	};
 
 	// 장바구니 이동 모달
-	const handleOk = async () => {
+	const handleOk = () => {
 		router.push('/cart');
 	};
 
