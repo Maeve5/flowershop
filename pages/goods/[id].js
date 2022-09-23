@@ -185,7 +185,7 @@ export default React.memo(Post);
 export const getServerSideProps = async ({ params }) => {
 	try {
 		const res = await API.get(`/v1/shop/product/${params.id}`);
-		console.log('res.token >> ', res.data);
+		// console.log('res.token >> ', res.data);
 		const datas = await res.data;
 		const { data, images, details } = datas;
 		return { props: { data, images, details } }

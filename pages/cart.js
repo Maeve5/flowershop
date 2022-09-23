@@ -13,11 +13,19 @@ function cart({ dataSet }) {
 	const [data, setData] = useState(dataSet);
 	// 체크박스 체크 여부
 	const [checked, setChecked] = useState('Y');
-	
+
 	// 상품금액 합계
 	let total = 0;
 	data.forEach((row) => {
 		total += (row.price * row.amount);
+		
+		// cart의 모든 항목 isChecked가 Y면 전체선택 체크박스를 Y로
+		// if (row.isChecked === 'Y') {
+		// 	return setChecked('Y');
+		// }
+		// else {
+		// 	return setChecked('N');
+		// }
 	})
 
 	// 변경사항 조회
@@ -55,7 +63,6 @@ function cart({ dataSet }) {
 				checked: checked === 'N' ? 'N' : 'Y'
 			});
 			console.log('res data >> ', res);
-			setChecked(checked);
 			getData();
 		}
 		catch (e) {
@@ -222,7 +229,8 @@ export default React.memo(cart);
 export const getServerSideProps = async () => {
 	try {
 		const res = await API.get('/v1/shop/cart');
-		console.log('res >> ', res);
+		console.log('res dataSet >> ', res.data.dataSet);
+		// console.log('res >> ', res);
 		const dataSet = await res.data.dataSet;
 		return { props: { dataSet } }
 	}
