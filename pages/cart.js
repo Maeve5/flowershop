@@ -3,7 +3,7 @@ import ContentWrap from '../components/ContentWrap';
 import API from '../modules/api';
 import Link from 'next/link';
 import router from 'next/router';
-import { Button } from 'antd';
+import { Button, Divider } from 'antd';
 import { CloseOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import Amount from '../components/Amount';
 import Checkbox from '../components/Checkbox';
@@ -17,7 +17,7 @@ function cart({ dataSet }) {
 	// 상품금액 합계
 	let total = 0;
 	data.forEach((row) => {
-		total += (row.price*row.amount);
+		total += (row.price * row.amount);
 	})
 
 	// 변경사항 조회
@@ -108,15 +108,16 @@ function cart({ dataSet }) {
 				<div className='cart-wrap'>
 					<div className='cart-select'>
 						<div className='select-all'>
-							<Checkbox checked={checked} mode='all' onClickCheck={(checked) => onChangeCheck('', checked)} />
+							<Checkbox checked={checked} text='전체선택' onClickCheck={(checked) => onChangeCheck('', checked)} />
 						</div>
-						<Button type='text' onClick={() => onDelete()}>선택삭제</Button>
+						<Divider type="vertical" />
+						<div className='select-delete' onClick={() => onDelete()}>선택삭제</div>
 					</div>
 					{data.map((row) => {
 						return (
 							<div key={row.productKey} className='cart-list'>
 								<div className='checkbox'>
-									<Checkbox checked={row.isChecked} onClickCheck={(checked) => onChangeCheck(row.cartKey, checked)} />
+									<Checkbox checked={row.isChecked} text='' onClickCheck={(checked) => onChangeCheck(row.cartKey, checked)} />
 								</div>
 								<div className='cart-image'>
 									<img
@@ -134,19 +135,19 @@ function cart({ dataSet }) {
 									<Amount amount={row.amount} onClickAmount={(amount) => onChangeAmount(row.cartKey, amount)} />
 								</div>
 								<div className='cart-sum-wrap'>
-									<div className='sum'>{(row.price * row.amount).toLocaleString('ko-KR')}</div>
-									<div className='sum-won'>원</div>
+									<div className='sum-value'>{(row.price * row.amount).toLocaleString('ko-KR')}</div>
+									<div className='sum-unit'>원</div>
 								</div>
-								<Button type='text' size='small' icon={<CloseOutlined style={{color: '#aaa'}} />} onClick={() => onDelete(row.cartKey)} />
+								<Button type='link' size='small' icon={<CloseOutlined style={{color: '#aaa'}} />} onClick={() => onDelete(row.cartKey)} />
 							</div>
 						)
 					})}
 					<div className='cart-select'>
-						<div className='checkbox'>
-							<Checkbox checked={checked} onClickCheck={(checked) => onChangeCheck('', checked)} />
+						<div className='select-all'>
+							<Checkbox checked={checked} text='전체선택' onClickCheck={(checked) => onChangeCheck('', checked)} />
 						</div>
-						<Button type='text' style={{paddingLeft: '1%'}} onClick>전체선택</Button>
-						<Button type='text' onClick={() => onDelete()}>선택삭제</Button>
+						<Divider type="vertical" />
+						<div className='select-delete' onClick={() => onDelete()}>선택삭제</div>
 					</div>
 				</div>
 				<div className='order-wrap'>
@@ -185,10 +186,12 @@ function cart({ dataSet }) {
 			.content-wrap { display: flex; justify-content: space-between; font-size: 16px; }
 
 			.cart-wrap { width: 700px; }
-			.cart-select { display: flex; align-items: center; padding: 12px; border-bottom: 1px solid #aaa; }
+			.cart-select { display: flex; align-items: baseline; padding: 10px; border-bottom: 1px solid #aaa; }
 			.select-all { width: 100px; }
-			.cart-list { display: flex; align-items: center; border-bottom: 1px solid #eee; padding: 8px 12px; }
-			.cart-image { margin: 0 1%; }
+			.select-delete { padding: 0 10px; }
+			.cart-list { display: flex; align-items: center; border-bottom: 1px solid #eee; padding: 8px 10px; }
+			.checkbox { padding: 8px; }
+			.cart-image { margin: 0 4px; }
 			a { color: rgba(0, 0, 0, 0.85); }
 			.cart-product { width: 44%; margin-left: 1%; font-size: 16px; font-weight: 500; }
 			.cart-amount-wrap { display: flex; width: 120px; justify-content: center; }
