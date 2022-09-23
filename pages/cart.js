@@ -21,6 +21,24 @@ function cart({ dataSet }) {
 	})
 	// cart의 모든 항목 isChecked가 Y면 전체선택 체크박스를 Y로
 
+	const filter = data.filter((row) => {
+		return row.isChecked === 'Y';
+	})
+	console.log('data', data.length);
+	console.log('filter', filter.length);
+
+	useEffect(() => {
+		if (filter.length = data.length) {
+			setChecked('Y');
+			getData();
+		}
+		else {
+			setChecked('N');
+			getData();
+		};
+	}, [checked]);
+	
+
 
 	// 변경사항 조회
 	const getData = async () => {
