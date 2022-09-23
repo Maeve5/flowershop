@@ -45,7 +45,8 @@ function cart({ dataSet }) {
 			apiUrl = `/v1/shop/cart/check/${cartKey}`;
 		}
 		else {
-			apiUrl = '/v1/shop/cart/check/all';
+			apiUrl = '/v1/shop/cart/check/all'
+			setChecked(checked);
 		}
 
 		// post
