@@ -13,28 +13,24 @@ function cart({ dataSet }) {
 	const [data, setData] = useState(dataSet);
 	// 체크박스 체크 여부
 	const [checked, setChecked] = useState('Y');
-
-	// 상품금액 합계
-	let total = 0;
-	data.forEach((row) => {
-		total += (row.price * row.amount);
-	})
-	// cart의 모든 항목 isChecked가 Y면 전체선택 체크박스를 Y로
-
+	// 체크된 항목
 	const filter = data.filter((row) => {
 		return row.isChecked === 'Y';
+	})
+	// 상품금액 합계
+	let total = 0;
+	filter.forEach((row) => {
+		total += (row.price * row.amount);
 	})
 	console.log('data', data.length);
 	console.log('filter', filter.length);
 
 	useEffect(() => {
-		if (filter.length = data.length) {
+		if (filter.length === data.length) {
 			setChecked('Y');
-			getData();
 		}
 		else {
 			setChecked('N');
-			getData();
 		};
 	}, [checked]);
 	
