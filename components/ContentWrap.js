@@ -24,7 +24,7 @@ function ContentWrap({ children }) {
 						<div className='top-home-wrap'>
 							<div className='home-btn'>
 								<Button
-									type='text'
+									type='link'
 									size='large'
 									style={{color: 'rgb(0, 122, 79)', backgroundColor: 'none'}}
 									icon={<HomeOutlined />}
@@ -32,9 +32,9 @@ function ContentWrap({ children }) {
 								/>
 							</div>
 							<div className='search-wrap'>
-								<Space direction="vertical">
+								<Space direction='vertical'>
 									<Search
-										placeholder="검색어를 입력해 주세요."
+										placeholder='검색어를 입력해 주세요.'
 										allowClear
 										onSearch={onSearch}
 										size='large'
@@ -45,7 +45,7 @@ function ContentWrap({ children }) {
 							</div>
 							<div className='icon-wrap'>
 								<Button
-									type='text'
+									type='link'
 									size='large'
 									style={{color: 'rgb(0, 122, 79)', backgroundColor: 'none'}}
 									icon={<ShoppingCartOutlined />}
@@ -77,26 +77,6 @@ function ContentWrap({ children }) {
 										},
 									]}
 								/>
-								{/* <Menu theme='light' mode='horizontal'>
-									<Menu.Item key={['1']}>
-										{[{
-											key: '1',
-											label: '신상품'
-										}]}
-									</Menu.Item>
-									<Menu.Item key={['2']}>
-										{[{
-											key: '2',
-											label: '베스트'
-										}]}
-									</Menu.Item>
-									<Menu.Item key={['3']}>
-										{[{
-											key: '3',
-											label: '알뜰쇼핑'
-										}]}
-									</Menu.Item>
-								</Menu> */}
 							</div>
 						</Header>
 					</div>
@@ -122,16 +102,16 @@ function ContentWrap({ children }) {
 			.layout { margin: auto; }
 
 			.top-layout-wrap { position: sticky; top: 0; margin: 0; z-index: 100; border-bottom: 1px solid #eee; box-shadow: 0px 1px 10px #eee; }
-			.top-wrap { position: relative; }
+			.top-wrap { position: relative; margin-bottom: 20px; }
 			.top-rightside-wrap { display: flex; justify-content: flex-end; margin: 0 64px 30px 0; height: 50px; line-height: 50px; }
 			.top-rightside-wrap > div { margin-right: 8px; }
-			.top-home-wrap { display: flex; align-items: center; margin: 20px; }
+			.top-home-wrap { display: flex; align-items: center; margin: 0 auto; width: 900px; }
 			.home-btn { flex: 1; }
 			.search-wrap { flex: 1; }
 			.icon-wrap { text-align: right; flex: 1; }
 			.menu-wrap { margin: 0 auto; padding-left: 56px; width: 320px; }
 
-			.content-wrap { margin: 64px auto; width: 1000px }
+			.content-wrap { margin: 64px auto; width: 1000px; }
 			.children-wrap { min-height: 380px; }
 
 			.footer-wrap { text-align: center; }

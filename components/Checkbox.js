@@ -11,20 +11,22 @@ function Checkbox({ checked, mode, onClickCheck }) {
 		else {
 			onClickCheck(checked = 'Y');
 		}
-	}
+	};
 
 	return (
-		<Button
-			type='text'
-			onClick={onClick}
-			style={{ padding: 0 }}
-			icon={checked === 'Y'
-				? <CheckCircleFilled style={{ color: checked === 'Y' ? 'rgb(0, 122, 79)' : '#aaa', padding: '8%' }} />
-				: <CheckCircleOutlined style={{ color: checked === 'Y' ? 'rgb(0, 122, 79)' : '#aaa', padding: '8%' }}/>
-			}
-		>
+		<div onClick={() => {onClick()}}>
+			<Button
+				type='link'
+				onClick={(e) => {e.stopPropagation(); onClick();}}
+				style={{ padding: 0 }}
+				icon={checked === 'Y'
+					? <CheckCircleFilled style={{ color: checked === 'Y' ? 'rgb(0, 122, 79)' : '#aaa', padding: '8%' }} />
+					: <CheckCircleOutlined style={{ color: checked === 'Y' ? 'rgb(0, 122, 79)' : '#aaa', padding: '8%' }} />
+				}
+			>
+			</Button>
 			{!mode ? '' : '전체선택'}
-		</Button>
+		</div>
 	);
 };
 

@@ -9,28 +9,24 @@ import Amount from '../components/Amount';
 import Checkbox from '../components/Checkbox';
 
 function cart({ dataSet }) {
+	// 장바구니 담긴 품목 데이터
 	const [data, setData] = useState(dataSet);
+	// 체크박스 체크 여부
 	const [checked, setChecked] = useState('Y');
 	
 	// 상품금액 합계
 	let total = 0;
-	data.map((row) => {
+	data.forEach((row) => {
 		total += (row.price*row.amount);
 	})
-
-	// 가격에 콤마 삽입
-	let price = total.toLocaleString('ko-KR');
-	let totalPrice = (total + 3000).toLocaleString('ko-KR');
 
 	// 변경사항 조회
 	const getData = async () => {
 		try {
 			const res = await API.get('/v1/shop/cart');
-			if (res.status === 200) {
-				// console.log('res >> ', res.data.dataSet);
-				setData(res.data.dataSet);
-				return data;
-			}
+			// console.log('res >> ', res.data.dataSet);
+			setData(res.data.dataSet);
+			return data;
 		}
 		catch (e) {
 			console.log(e);
@@ -54,15 +50,12 @@ function cart({ dataSet }) {
 
 		// post
 		try {
-			console.log(apiUrl);
 			const res = await API.post(apiUrl, {
 				checked: checked === 'N' ? 'N' : 'Y'
 			});
-			if (res.status === 200) {
-				console.log('res data >> ', res);
-				setChecked(checked);
-				getData();
-			}
+			console.log('res data >> ', res);
+			setChecked(checked);
+			getData();
 		}
 		catch (e) {
 			console.log('e >> ', e)
@@ -76,10 +69,8 @@ function cart({ dataSet }) {
 			const res = await API.patch(`/v1/shop/cart/${cartKey}`, {
 				amount: amount
 			});
-			if (res.status === 200) {
-				// console.log('res data >> ', response);
-				getData();
-			}
+			// console.log('res data >> ', response);
+			getData();
 		}
 		catch (e) {
 			console.log('e >> ', e);	
@@ -100,11 +91,9 @@ function cart({ dataSet }) {
 		// delete
 		try {
 			const res = await API.delete(apiUrl);
-			if (res.status === 200) {
-				// console.log('res >> ', res);
-				alert('삭제되었습니다.');
-				getData();
-			}
+			// console.log('res >> ', res);
+			alert('삭제되었습니다.');
+			getData();
 		}
 		catch (e) {
 			alert(e.message);
@@ -124,7 +113,6 @@ function cart({ dataSet }) {
 						<Button type='text' onClick={() => onDelete()}>선택삭제</Button>
 					</div>
 					{data.map((row) => {
-						const sum = (row.price*row.amount).toLocaleString('ko-KR');
 						return (
 							<div key={row.productKey} className='cart-list'>
 								<div className='checkbox'>
@@ -146,7 +134,7 @@ function cart({ dataSet }) {
 									<Amount amount={row.amount} onClickAmount={(amount) => onChangeAmount(row.cartKey, amount)} />
 								</div>
 								<div className='cart-sum-wrap'>
-									<div className='sum'>{sum}</div>
+									<div className='sum'>{(row.price * row.amount).toLocaleString('ko-KR')}</div>
 									<div className='sum-won'>원</div>
 								</div>
 								<Button type='text' size='small' icon={<CloseOutlined style={{color: '#aaa'}} />} onClick={() => onDelete(row.cartKey)} />
@@ -175,7 +163,7 @@ function cart({ dataSet }) {
 					<div className='order-sum-wrap'>
 						<div className='sum'>
 							<div>상품금액</div>
-							<div>{price} 원</div>
+							<div>{total.toLocaleString('ko-KR')} 원</div>
 						</div>
 						<div className='sum-delivery'>
 							<div>배송비</div>
@@ -183,7 +171,7 @@ function cart({ dataSet }) {
 						</div>
 						<div className='sum-price'>
 							<div>결제예정금액</div>
-							<div className='total-price'>{totalPrice} 원</div>
+							<div className='total-price'>{(total + 3000).toLocaleString('ko-KR')} 원</div>
 						</div>
 					</div>
 					<div className='order-button-wrap'>
@@ -230,11 +218,8 @@ export default React.memo(cart);
 export const getServerSideProps = async () => {
 	try {
 		const res = await API.get('/v1/shop/cart');
-		if (res.status === 200) {
-			console.log('res >> ', res);
-			const dataSet = await res.data.dataSet;
-			return { props: { dataSet } }
-		}
+		console.log('res >> ', res);
+		const dataSet = await res.data.dataSet;
 		return { props: { dataSet } }
 	}
 	catch (e) {

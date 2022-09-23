@@ -6,11 +6,11 @@ function ProductAcount({ amount, onClickAmount }) {
 	// 수량 증감
 	const handleDecresement = () => {
 		onClickAmount(amount - 1);
-	}
+	};
 
 	const handleIncresement = () => {
 		onClickAmount(amount + 1);
-	}
+	};
 
 	return (
 		<>

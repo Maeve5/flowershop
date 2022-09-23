@@ -6,9 +6,10 @@ import router from 'next/router';
 import Amount from '../../components/Amount';
 
 function Post({ data, images, details }) {
+	// 장바구니 담기 확인 모달
 	const [isModalOpen, setIsModalOpen] = useState(false);
+	// 싱품 수량
 	const [amount, setAmount] = useState(1);
-	const price = (data.price * amount).toLocaleString('ko-KR');
 
 	// 수량 state 변경
 	const onClickAmount = (amount) => {
@@ -23,10 +24,8 @@ function Post({ data, images, details }) {
 				productKey: data.rowKey,
 				cartQty: amount
 			})
-			if (res.status === 200) {
-				console.log('res status >> ', res.status);
-				console.log('res data >> ', res.data);
-			}
+			console.log('res status >> ', res.status);
+			console.log('res data >> ', res.data);
 		}
 		catch (e) {
 			console.log('e >> ', e);
@@ -58,8 +57,8 @@ function Post({ data, images, details }) {
 						{data.productName}
 					</div>
 					<div className='line price-wrap'>
-						<div className='price'>{price}</div>
-						<div className='price-won'>원</div>
+						<div className='price-value'>{(data.price * amount).toLocaleString('ko-KR')}</div>
+						<div className='price-unit'>원</div>
 					</div>
 					<div className='line-container'>
 						<dl className='line'>
@@ -85,8 +84,8 @@ function Post({ data, images, details }) {
 						<div>
 							<div className='sum-wrap'>
 								<div>총 상품금액 :</div>
-								<div className='sum'>{price}</div>
-								<div className='sum-won'>원</div>
+								<div className='sum-value'>{(data.price * amount).toLocaleString('ko-KR')}</div>
+								<div className='sum-unit'>원</div>
 							</div>
 							<div className='cart-btn'>
 								<Button type='primary' block size='large' onClick={showModal}>
@@ -102,22 +101,22 @@ function Post({ data, images, details }) {
 			</article>
 			<nav>
 				<div className='tap'>
-					<a href="#">
+					<a href={`#${images[0].rowKey}`}>
 						상품설명
 					</a>
 				</div>
 				<div className='tap'>
-					<a href="#">
+					<a href={`#${details[0].rowKey}`}>
 						상세정보
 					</a>
 				</div>
 				<div className='tap'>
-					<a href="#">
+					<a href='#review'>
 						후기
 					</a>
 				</div>
 				<div className='tap'>
-					<a href="#">
+					<a href='#qna'>
 						문의
 					</a>
 				</div>
@@ -126,8 +125,9 @@ function Post({ data, images, details }) {
 				{images.map((row) => {
 					return (
 						<div key={row.rowKey} className='image'>
+							<a name={`${row.rowKey}`} className='a' />
 							<img
-								className='detailImage'
+								className='image-detail'
 								src={row.large}
 								alt={row.large}
 								width={600}
@@ -138,8 +138,9 @@ function Post({ data, images, details }) {
 				{details.map((row) => {
 					return (
 						<div key={row.rowKey} className='image'>
+							<a name={`${row.rowKey}`} className='a' />
 							<img
-								className='detailImage'
+								className='image-detail'
 								src={row.large}
 								alt={row.large}
 								width={600}
@@ -148,6 +149,8 @@ function Post({ data, images, details }) {
 					)
 				})}
 			</div>
+			<div><a name='review' className='a' />후기</div>
+			<div><a name='qna' className='a' />문의</div>
 
 			<style jsx>{`
 			article { display: flex; justify-content: space-around; }
@@ -155,22 +158,23 @@ function Post({ data, images, details }) {
 			.product { font-size: 20px; font-weight: 500; padding-top: 16px; }
 			.line { margin: 0; border-bottom: 1px solid #eee; display: flex; align-items: center; }
 			.price-wrap { margin: 0; padding: 16px 0; align-items: baseline; }
-			.price { font-size: 28px; font-weight: 700; }
-			.price-won { font-size: 18px; font-weight: 600; padding-left: 4px; }
+			.price-value { font-size: 28px; font-weight: 700; }
+			.price-unit { font-size: 18px; font-weight: 600; padding-left: 4px; }
 			dl { height: 70px; }
 			dt { flex: 1; }
 			dd { flex: 2; margin: 0; }
 			.amount-wrap { flex: 2; display: flex; }
 			.sum-wrap { display: flex; justify-content: flex-end; align-items: baseline; padding-top: 32px; }
-			.sum { font-size: 36px; font-weight: 700; padding: 0 4px; }
-			.sum-won { font-size: 20px; font-weight: 600; padding-right: 4px; }
+			.sum-value { font-size: 36px; font-weight: 700; padding: 0 4px; }
+			.sum-unit { font-size: 20px; font-weight: 600; padding-right: 4px; }
 			.cart-btn { padding-top: 12px; }
 
-			nav { display: flex; justify-content: space-between; text-align: center; line-height: 50px; margin-top: 80px; position: sticky; top: 204.14px; background-color: white; }
+			nav { display: flex; justify-content: space-between; text-align: center; line-height: 50px; margin-top: 80px; position: sticky; top: 205.14px; background-color: white; }
 			.tap { flex: 1; height: 50px; border:1px solid #eee; font-size: 16px; }
+			.a { position: relative; top: -250px; }
 			.detail-wrap { display: flex; flex-direction: column; justify-content: space-around; max-width: 80%; margin: 40px auto; }
 			.image { display: flex; text-align: center; }
-			.detailImage { display: block; margin: 40px auto; }
+			.image-detail { display: block; margin: 40px auto; }
 			`}</style>
 		</ContentWrap>
 	);
@@ -181,12 +185,9 @@ export default React.memo(Post);
 export const getServerSideProps = async ({ params }) => {
 	try {
 		const res = await API.get(`/v1/shop/product/${params.id}`);
-		if (res.status === 200) {
-			console.log('res.token >> ', res.data);
-			const datas = await res.data;
-			const { data, images, details } = datas;
-			return { props: { data, images, details } }
-		}
+		console.log('res.token >> ', res.data);
+		const datas = await res.data;
+		const { data, images, details } = datas;
 		return { props: { data, images, details } }
 	}
 	catch (e) {
