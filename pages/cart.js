@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import ContentWrap from '../components/ContentWrap';
 import API from '../modules/api';
 import Link from 'next/link';
@@ -18,21 +18,15 @@ function cart({ dataSet }) {
 	let total = 0;
 	data.forEach((row) => {
 		total += (row.price * row.amount);
-		
-		// cart의 모든 항목 isChecked가 Y면 전체선택 체크박스를 Y로
-		// if (row.isChecked === 'Y') {
-		// 	return setChecked('Y');
-		// }
-		// else {
-		// 	return setChecked('N');
-		// }
 	})
+	// cart의 모든 항목 isChecked가 Y면 전체선택 체크박스를 Y로
+
 
 	// 변경사항 조회
 	const getData = async () => {
 		try {
 			const res = await API.get('/v1/shop/cart');
-			// console.log('res >> ', res.data.dataSet);
+			console.log('res >> ', res.data.dataSet);
 			setData(res.data.dataSet);
 			return data;
 		}
@@ -46,7 +40,7 @@ function cart({ dataSet }) {
 	}, []);
 
 	// checkbox 상태 변경
-	const onChangeCheck = async (cartKey, checked) => {
+	const onChangeCheck = useCallback(async (cartKey, checked) => {
 		// 단일 선택, 전체 선택
 		const apiUrl = ``;
 		if (cartKey) {
@@ -68,10 +62,10 @@ function cart({ dataSet }) {
 		catch (e) {
 			console.log('e >> ', e)
 		}
-	};
+	}, []);
 
 	// 수량 변경
-	const onChangeAmount = async (cartKey, amount) => {
+	const onChangeAmount = useCallback(async (cartKey, amount) => {
 		// patch
 		try {
 			const res = await API.patch(`/v1/shop/cart/${cartKey}`, {
@@ -83,10 +77,10 @@ function cart({ dataSet }) {
 		catch (e) {
 			console.log('e >> ', e);	
 		}
-	};
+	}, []);
 
 	// 항목 삭제
-	const onDelete = async (cartKey) => {
+	const onDelete = useCallback(async (cartKey) => {
 		// 단일 삭제, 선택 삭제
 		const apiUrl = ``;
 		if (cartKey) {
@@ -107,7 +101,7 @@ function cart({ dataSet }) {
 			alert(e.message);
 		    console.log('e >> ', e);
 		}
-	};
+	}, []);
 
 	return (
 		<ContentWrap>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import ContentWrap from '../../components/ContentWrap';
 import API from '../../modules/api';
 import { Button, Modal } from 'antd';
@@ -12,12 +12,12 @@ function Post({ data, images, details }) {
 	const [amount, setAmount] = useState(1);
 
 	// 수량 state 변경
-	const onClickAmount = (amount) => {
+	const onClickAmount = useCallback((amount) => {
 		setAmount(amount);
-	};
+	}, [amount]);
 
 	// 장바구니 추가
-	const showModal = async () => {
+	const showModal = useCallback(async () => {
 		setIsModalOpen(true);
 		try {
 			const res = await API.post('/v1/shop/cart', {
@@ -30,7 +30,7 @@ function Post({ data, images, details }) {
 		catch (e) {
 			console.log('e >> ', e);
 		}
-	};
+	}, []);
 
 	// 장바구니 이동 모달
 	const handleOk = () => {
