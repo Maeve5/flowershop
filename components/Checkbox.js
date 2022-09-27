@@ -1,5 +1,4 @@
 import React from 'react';
-import { Button } from 'antd';
 import { CheckCircleOutlined, CheckCircleFilled } from '@ant-design/icons';
 
 function Checkbox({ checked, text, onClickCheck }) {
@@ -16,8 +15,8 @@ function Checkbox({ checked, text, onClickCheck }) {
 	return (
 		<div onClick={() => {onClick()}}>
 			{checked === 'Y'
-				? <CheckCircleFilled style={{ color: checked === 'Y' ? 'rgb(0, 122, 79)' : '#aaa', padding: '8%', marginRight: 2 }} />
-				: <CheckCircleOutlined style={{ color: checked === 'Y' ? 'rgb(0, 122, 79)' : '#aaa', padding: '8%', marginRight: 2 }} />
+				? <CheckCircleFilled style={{ color: 'rgb(0, 122, 79)', padding: '8%', marginRight: 2 }} />
+				: <CheckCircleOutlined style={{ color: '#aaa', padding: '8%', marginRight: 2 }} />
 			}
 			{text}
 		</div>

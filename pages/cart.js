@@ -11,28 +11,30 @@ import Checkbox from '../components/Checkbox';
 function cart({ dataSet }) {
 	// 장바구니 담긴 품목 데이터
 	const [data, setData] = useState(dataSet);
+	console.log(dataSet);
 	// 체크박스 체크 여부
 	const [checked, setChecked] = useState('Y');
 	// 체크된 항목
 	const filter = data.filter((row) => {
 		return row.isChecked === 'Y';
 	})
+
 	// 상품금액 합계
 	let total = 0;
 	filter.forEach((row) => {
 		total += (row.price * row.amount);
 	})
-	console.log('data', data.length);
-	console.log('filter', filter.length);
+	// console.log('data', data.length);
+	// console.log('filter', filter.length);
 
-	useEffect(() => {
-		if (filter.length === data.length) {
-			setChecked('Y');
-		}
-		else {
-			setChecked('N');
-		};
-	}, [checked]);
+	// useEffect(() => {
+	// 	if (filter.length === data.length) {
+	// 		setChecked('Y');
+	// 	}
+	// 	else {
+	// 		setChecked('N');
+	// 	};
+	// }, [checked]);
 	
 
 
@@ -40,7 +42,7 @@ function cart({ dataSet }) {
 	const getData = async () => {
 		try {
 			const res = await API.get('/v1/shop/cart');
-			console.log('res >> ', res.data.dataSet);
+			// console.log('res >> ', res.data.dataSet);
 			setData(res.data.dataSet);
 			return data;
 		}
@@ -70,7 +72,7 @@ function cart({ dataSet }) {
 			const res = await API.post(apiUrl, {
 				checked: checked === 'N' ? 'N' : 'Y'
 			});
-			console.log('res data >> ', res);
+			// console.log('res data >> ', res);
 			getData();
 		}
 		catch (e) {
@@ -117,6 +119,10 @@ function cart({ dataSet }) {
 		}
 	}, []);
 
+	const onSearchAddress = () => {
+		window.open('/address');
+	};
+
 	return (
 		<ContentWrap>
 			<h2>장바구니</h2>
@@ -131,7 +137,7 @@ function cart({ dataSet }) {
 					</div>
 					{data.map((row) => {
 						return (
-							<div key={row.productKey} className='cart-list'>
+							<div key={row.cartKey} className='cart-list'>
 								<div className='checkbox'>
 									<Checkbox checked={row.isChecked} text='' onClickCheck={(checked) => onChangeCheck(row.cartKey, checked)} />
 								</div>
@@ -174,7 +180,7 @@ function cart({ dataSet }) {
 						</div>
 						<div className='address-wrap'>
 							<p>주소지</p>
-							<Button type='primary' ghost block>주소 검색</Button>
+							<Button type='primary' ghost block onClick={onSearchAddress}>주소 검색</Button>
 						</div>
 					</div>
 					<div className='order-sum-wrap'>
@@ -211,7 +217,6 @@ function cart({ dataSet }) {
 			a { color: rgba(0, 0, 0, 0.85); }
 			.cart-product { width: 44%; margin-left: 1%; font-size: 16px; font-weight: 500; }
 			.cart-amount-wrap { display: flex; width: 120px; justify-content: center; }
-			.amount { width: 52px; height: 24px; text-align: center; }
 			.cart-sum-wrap { display: flex; width: 100px; justify-content: flex-end; margin-right: 8px; font-weight: 700; }
 
 			.order-wrap { width: 270px; padding-top: 56px; }

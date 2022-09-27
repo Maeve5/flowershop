@@ -1,16 +1,18 @@
 import React, { useState, useCallback } from 'react';
 import ContentWrap from '../../components/ContentWrap';
 import API from '../../modules/api';
-import { Button, Modal } from 'antd';
+import { Select, Button, Modal } from 'antd';
+const { Option } = Select;
 import router from 'next/router';
 import Amount from '../../components/Amount';
 
-function Post({ data, images, details }) {
+function Post({ data, images, details, options }) {
+	// 금액
+	const [price, setPrice] = useState(data.price);
 	// 장바구니 담기 확인 모달
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	// 싱품 수량
 	const [amount, setAmount] = useState(1);
-
 	// 수량 state 변경
 	const onClickAmount = useCallback((amount) => {
 		setAmount(amount);
@@ -24,8 +26,6 @@ function Post({ data, images, details }) {
 				productKey: data.rowKey,
 				cartQty: amount
 			})
-			console.log('res status >> ', res.status);
-			console.log('res data >> ', res.data);
 		}
 		catch (e) {
 			console.log('e >> ', e);
@@ -44,12 +44,11 @@ function Post({ data, images, details }) {
 	return (
 		<ContentWrap>
 			<article>
-				<div>
+				<div className='img'>
 					<img
 						src={data.imageUrl}
 						alt={data.imageUrl}
-						width={480}
-						height={560}
+						width={400}
 					/>
 				</div>
 				<div className='summary-wrap'>
@@ -57,7 +56,7 @@ function Post({ data, images, details }) {
 						{data.productName}
 					</div>
 					<div className='line price-wrap'>
-						<div className='price-value'>{(data.price * amount).toLocaleString('ko-KR')}</div>
+						<div className='price-value'>{(price * amount).toLocaleString('ko-KR')}</div>
 						<div className='price-unit'>원</div>
 					</div>
 					<div className='line-container'>
@@ -69,22 +68,49 @@ function Post({ data, images, details }) {
 							<dt>판매자</dt>
 							<dd>꽃팜</dd>
 						</dl>
-						<dl className='line'>
-							<dt>판매단위</dt>
-							<dd>상품명 참조</dd>
-						</dl>
+						{!options ?
+							<dl className='line'>
+								<dt>판매단위</dt>
+								<dd>상품명 참조</dd>
+							</dl>
+							: ''
+						}
 					</div>
 					<div className='order'>
-						<dl className='line'>
-							<dt>구매수량</dt>
-							<div className='amount-wrap'>
-								<Amount amount={amount} onClickAmount={onClickAmount} />
-							</div>
-						</dl>
+						{!options ?
+							<dl className='line'>
+								<dt>구매수량</dt>
+								<div className='amount-wrap'>
+									<Amount amount={amount} onClickAmount={onClickAmount} />
+								</div>
+							</dl>
+							: <dl className='line'>
+								<dt>옵션</dt>
+								<dd>
+									<Select
+										labelInValue
+										defaultValue='옵션을 선택하세요.'
+										style={{
+											width: 160
+										}}
+										onChange={(e) => setPrice(options[e.key].price)}
+									>
+										{options.map((row, idx) => {
+											return (
+												<Option key={idx} value={row.name} />
+											)
+										})}
+									</Select>
+								</dd>
+							</dl>
+						}
 						<div>
 							<div className='sum-wrap'>
 								<div>총 상품금액 :</div>
-								<div className='sum-value'>{(data.price * amount).toLocaleString('ko-KR')}</div>
+								{!options ?
+									<div className='sum-value'>{(price * amount).toLocaleString('ko-KR')}</div>
+									: <div className='sum-value'>{(price * amount).toLocaleString('ko-KR')}</div>
+								}
 								<div className='sum-unit'>원</div>
 							</div>
 							<div className='cart-btn'>
@@ -154,7 +180,8 @@ function Post({ data, images, details }) {
 
 			<style jsx>{`
 			article { display: flex; justify-content: space-around; }
-			.summary-wrap { width: 440px; align-items: center; }
+			.img { display: flex; align-items: center; margin: 10px; }
+			.summary-wrap { width: 440px; align-items: center; margin-left: 10px; }
 			.product { font-size: 20px; font-weight: 500; padding-top: 16px; }
 			.line { margin: 0; border-bottom: 1px solid #eee; display: flex; align-items: center; }
 			.price-wrap { margin: 0; padding: 16px 0; align-items: baseline; }
@@ -185,10 +212,10 @@ export default React.memo(Post);
 export const getServerSideProps = async ({ params }) => {
 	try {
 		const res = await API.get(`/v1/shop/product/${params.id}`);
-		// console.log('res.token >> ', res.data);
+		console.log('res.token >> ', res.data);
 		const datas = await res.data;
-		const { data, images, details } = datas;
-		return { props: { data, images, details } }
+		const { data, images, details, options } = datas;
+		return { props: { data, images, details, options } }
 	}
 	catch (e) {
 		console.log('e >> ', e);

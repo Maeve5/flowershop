@@ -105,13 +105,13 @@ function ContentWrap({ children }) {
 			.top-wrap { position: relative; margin-bottom: 20px; }
 			.top-rightside-wrap { display: flex; justify-content: flex-end; margin: 0 64px 30px 0; height: 50px; line-height: 50px; }
 			.top-rightside-wrap > div { margin-right: 8px; }
-			.top-home-wrap { display: flex; align-items: center; margin: 0 auto; width: 900px; }
+			.top-home-wrap { display: flex; align-items: center; margin: 0 auto; max-width: 720px; }
 			.home-btn { flex: 1; }
 			.search-wrap { flex: 1; }
 			.icon-wrap { text-align: right; flex: 1; }
 			.menu-wrap { margin: 0 auto; padding-left: 56px; width: 320px; }
 
-			.content-wrap { margin: 64px auto; width: 1000px; }
+			.content-wrap { margin: 64px auto; }
 			.children-wrap { min-height: 380px; }
 
 			.footer-wrap { text-align: center; }
