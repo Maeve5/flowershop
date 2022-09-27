@@ -33,4 +33,4 @@ function ProductAcount({ amount, onClickAmount }) {
 	);
 };
 
-export default ProductAcount;
+export default React.memo(ProductAcount);

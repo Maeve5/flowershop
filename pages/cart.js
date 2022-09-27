@@ -1,19 +1,23 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import Modal from 'react-modal/lib/components/Modal';
 import ContentWrap from '../components/ContentWrap';
 import API from '../modules/api';
 import Link from 'next/link';
 import router from 'next/router';
-import { Button, Divider } from 'antd';
+import { AutoComplete, Button, Divider } from 'antd';
 import { CloseOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import Amount from '../components/Amount';
-import Checkbox from '../components/Checkbox';
+import Checkbox from '../components/cart/Checkbox';
+import Address from '../components/cart/Address';
 
 function cart({ dataSet }) {
 	// 장바구니 담긴 품목 데이터
 	const [data, setData] = useState(dataSet);
-	console.log(dataSet);
+	// console.log(dataSet);
 	// 체크박스 체크 여부
 	const [checked, setChecked] = useState('Y');
+	// 주소 검색 창 모달
+	const [isOpen, setIsOpen] = useState(false);
 	// 체크된 항목
 	const filter = data.filter((row) => {
 		return row.isChecked === 'Y';
@@ -23,20 +27,7 @@ function cart({ dataSet }) {
 	let total = 0;
 	filter.forEach((row) => {
 		total += (row.price * row.amount);
-	})
-	// console.log('data', data.length);
-	// console.log('filter', filter.length);
-
-	// useEffect(() => {
-	// 	if (filter.length === data.length) {
-	// 		setChecked('Y');
-	// 	}
-	// 	else {
-	// 		setChecked('N');
-	// 	};
-	// }, [checked]);
-	
-
+	});
 
 	// 변경사항 조회
 	const getData = async () => {
@@ -91,7 +82,7 @@ function cart({ dataSet }) {
 			getData();
 		}
 		catch (e) {
-			console.log('e >> ', e);	
+			console.log('e >> ', e);
 		}
 	}, []);
 
@@ -115,13 +106,14 @@ function cart({ dataSet }) {
 		}
 		catch (e) {
 			alert(e.message);
-		    console.log('e >> ', e);
+			console.log('e >> ', e);
 		}
 	}, []);
 
-	const onSearchAddress = () => {
-		window.open('/address');
+	const toggle = () => {
+		setIsOpen(!isOpen);
 	};
+	
 
 	return (
 		<ContentWrap>
@@ -160,7 +152,7 @@ function cart({ dataSet }) {
 									<div className='sum-value'>{(row.price * row.amount).toLocaleString('ko-KR')}</div>
 									<div className='sum-unit'>원</div>
 								</div>
-								<Button type='link' size='small' icon={<CloseOutlined style={{color: '#aaa'}} />} onClick={() => onDelete(row.cartKey)} />
+								<Button type='link' size='small' icon={<CloseOutlined style={{ color: '#aaa' }} />} onClick={() => onDelete(row.cartKey)} />
 							</div>
 						)
 					})}
@@ -179,8 +171,12 @@ function cart({ dataSet }) {
 							<h3>배송지</h3>
 						</div>
 						<div className='address-wrap'>
-							<p>주소지</p>
-							<Button type='primary' ghost block onClick={onSearchAddress}>주소 검색</Button>
+							<p>배송지를 등록하세요.</p>
+							{/* <p>{address ? address : '배송지를 등록하세요.'}</p> */}
+							<Button type='primary' ghost block onClick={toggle}>배송지 변경</Button>
+							<Modal isOpen={isOpen} style={{overlay: {top: 220, maxWidth: 720, margin: '0 auto', backgroundColor: 'none'}}}>
+								<Address />
+							</Modal>
 						</div>
 					</div>
 					<div className='order-sum-wrap'>
@@ -209,8 +205,8 @@ function cart({ dataSet }) {
 
 			.cart-wrap { width: 700px; }
 			.cart-select { display: flex; align-items: baseline; padding: 10px; border-bottom: 1px solid #aaa; }
-			.select-all { width: 100px; }
-			.select-delete { padding: 0 10px; }
+			.select-all { width: 100px; cursor: pointer; }
+			.select-delete { padding: 0 10px; cursor: pointer; }
 			.cart-list { display: flex; align-items: center; border-bottom: 1px solid #eee; padding: 8px 10px; }
 			.checkbox { padding: 8px; }
 			.cart-image { margin: 0 4px; }
@@ -243,7 +239,7 @@ export const getServerSideProps = async () => {
 	try {
 		const res = await API.get('/v1/shop/cart');
 		console.log('res dataSet >> ', res.data.dataSet);
-		// console.log('res >> ', res);
+		console.log('res >> ', res);
 		const dataSet = await res.data.dataSet;
 		return { props: { dataSet } }
 	}

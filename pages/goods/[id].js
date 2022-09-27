@@ -49,6 +49,7 @@ function Post({ data, images, details, options }) {
 						src={data.imageUrl}
 						alt={data.imageUrl}
 						width={400}
+						height={520}
 					/>
 				</div>
 				<div className='summary-wrap'>
@@ -56,7 +57,7 @@ function Post({ data, images, details, options }) {
 						{data.productName}
 					</div>
 					<div className='line price-wrap'>
-						<div className='price-value'>{(price * amount).toLocaleString('ko-KR')}</div>
+						<div className='price-value'>{(price).toLocaleString('ko-KR')}</div>
 						<div className='price-unit'>원</div>
 					</div>
 					<div className='line-container'>
@@ -68,13 +69,11 @@ function Post({ data, images, details, options }) {
 							<dt>판매자</dt>
 							<dd>꽃팜</dd>
 						</dl>
-						{!options ?
+						{!options &&
 							<dl className='line'>
 								<dt>판매단위</dt>
 								<dd>상품명 참조</dd>
-							</dl>
-							: ''
-						}
+							</dl>}
 					</div>
 					<div className='order'>
 						{!options ?
@@ -93,7 +92,7 @@ function Post({ data, images, details, options }) {
 										style={{
 											width: 160
 										}}
-										onChange={(e) => setPrice(options[e.key].price)}
+										onChange={(e) => setPrice(data.price+options[e.key].price)}
 									>
 										{options.map((row, idx) => {
 											return (
@@ -109,7 +108,7 @@ function Post({ data, images, details, options }) {
 								<div>총 상품금액 :</div>
 								{!options ?
 									<div className='sum-value'>{(price * amount).toLocaleString('ko-KR')}</div>
-									: <div className='sum-value'>{(price * amount).toLocaleString('ko-KR')}</div>
+									: <div className='sum-value'>{(price).toLocaleString('ko-KR')}</div>
 								}
 								<div className='sum-unit'>원</div>
 							</div>

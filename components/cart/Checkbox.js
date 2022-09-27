@@ -23,4 +23,4 @@ function Checkbox({ checked, text, onClickCheck }) {
 	);
 };
 
-export default Checkbox;
+export default React.memo(Checkbox);

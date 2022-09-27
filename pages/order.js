@@ -3,7 +3,6 @@ import ContentWrap from '../components/ContentWrap';
 import API from '../modules/api';
 import Link from 'next/link';
 import { Input } from 'antd';
-import { CompassOutlined } from '@ant-design/icons';
 
 function order({ dataSet }) {
 
@@ -11,29 +10,43 @@ function order({ dataSet }) {
 	const [name, setName] = useState('');
 	const [tel, setTel] = useState('');
 	const [email, setEmail] = useState('');
+	const [receiverName, setReceiverName] = useState('');
+	const [receiverTel, setReceiverTel] = useState('');
+	const [postcode, setPostcode] = useState('');
+	const [address, setAddress] = useState('');
+	const [detailAddress, setDetailAddress] = useState('');
+	const [isCoupon, setIsCoupon] = useState('');
+	const [couponCode, setCouponCode] = useState('');
+	const [paymentMethod, setPaymentMethod] = useState('');
+	const [deliveryMessage, setDeliveryMessage] = useState('');
 
-	let info = {
-		name: name,
-		tel: tel,
-		email: email,
-		// receiverName: '',
-		// receiverTel: '',
-		// address: {},
-		// detailAddress: '',
-		// isCoupon: isCoupon ? '' : null,
-		// couponCode: couponCode ? '' : null,
-		// paymentMethod: '',
-		// deliveryMessage: deliveryMessage ? '' : null
-	}
+	let info = {};
 
-	// localStorage.setItem('infos', JSON.stringify(info));
-	// console.log('info', info);
 
-	// useEffect(() => {
-	// 	localStorage.setItem('items', JSON.stringify(data));
-	// }, []);
+	useEffect(() => {
 
-	
+		info = {
+			name: name,
+			tel: tel,
+			email: email,
+			receiverName: receiverName,
+			receiverTel: receiverTel,
+			postcode: postcode,
+			address: address,
+			detailAddress: detailAddress,
+			isCoupon: isCoupon ? isCoupon : null,
+			couponCode: couponCode ? couponCode : null,
+			paymentMethod: paymentMethod,
+			deliveryMessage: deliveryMessage ? deliveryMessage : null
+		}
+
+		localStorage.setItem('infos', JSON.stringify(info));
+		console.log('info', info);
+		// localStorage.setItem('items', JSON.stringify(data));
+
+	}, [name, tel, email, receiverName, receiverTel, postcode, address, detailAddress, isCoupon, couponCode, paymentMethod, deliveryMessage]);
+
+
 
 	return (
 		<ContentWrap>
@@ -79,7 +92,7 @@ function order({ dataSet }) {
 						<div className='order-info'>
 							<div className='info'>휴대폰</div>
 							<div className='info-input'>
-								<Input type='tel' value={tel} onChange={(e) => setTel(e.target.value)} placeholder='ex) 01012345678' maxLength={11}/>
+								<Input type='tel' value={tel} onChange={(e) => setTel(e.target.value)} placeholder='ex) 01012345678' maxLength={11} />
 							</div>
 						</div>
 						<div className='order-info'>
@@ -147,7 +160,7 @@ export const getServerSideProps = async () => {
 	try {
 		const res = await API.get('/v1/shop/cart');
 		console.log('res dataSet >> ', res.data.dataSet);
-		// console.log('res >> ', res);
+		console.log('res >> ', res);
 		const dataSet = await res.data.dataSet;
 		return { props: { dataSet } }
 	}

@@ -120,4 +120,4 @@ function ContentWrap({ children }) {
 	);
 };
 
-export default ContentWrap;
+export default React.memo(ContentWrap);
