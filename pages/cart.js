@@ -4,7 +4,7 @@ import ContentWrap from '../components/ContentWrap';
 import API from '../modules/api';
 import Link from 'next/link';
 import router from 'next/router';
-import { AutoComplete, Button, Divider } from 'antd';
+import { Button, Divider } from 'antd';
 import { CloseOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import Amount from '../components/Amount';
 import Checkbox from '../components/cart/Checkbox';
@@ -13,7 +13,6 @@ import Address from '../components/cart/Address';
 function cart({ dataSet }) {
 	// 장바구니 담긴 품목 데이터
 	const [data, setData] = useState(dataSet);
-	// console.log(dataSet);
 	// 체크박스 체크 여부
 	const [checked, setChecked] = useState('Y');
 	// 주소 검색 창 모달
@@ -110,10 +109,24 @@ function cart({ dataSet }) {
 		}
 	}, []);
 
+	// 모달 창 토글
 	const toggle = () => {
 		setIsOpen(!isOpen);
 	};
-	
+
+	// 주소 받아오기
+	const [info, setInfo] = useState({});
+	const [address, setAddress] = useState('');
+	const [detailAddress, setDetailAddress] = useState('');
+
+	useEffect(() => {
+		setInfo(JSON.parse(localStorage.getItem('infos')));
+		console.log(info);
+		setAddress(info.address);
+		setDetailAddress(info.detailAddress);
+		console.log(address);
+		console.log(detailAddress);
+	}, []);
 
 	return (
 		<ContentWrap>
@@ -134,11 +147,7 @@ function cart({ dataSet }) {
 									<Checkbox checked={row.isChecked} text='' onClickCheck={(checked) => onChangeCheck(row.cartKey, checked)} />
 								</div>
 								<div className='cart-image'>
-									<img
-										src={row.imageUrl}
-										alt={row.imageUrl}
-										width={80}
-									/>
+									<img src={row.imageUrl} alt={row.imageUrl} width={80} />
 								</div>
 								<Link href={`/goods/${row.productKey}`}>
 									<a className='cart-product'>
@@ -171,11 +180,11 @@ function cart({ dataSet }) {
 							<h3>배송지</h3>
 						</div>
 						<div className='address-wrap'>
-							<p>배송지를 등록하세요.</p>
-							{/* <p>{address ? address : '배송지를 등록하세요.'}</p> */}
-							<Button type='primary' ghost block onClick={toggle}>배송지 변경</Button>
-							<Modal isOpen={isOpen} style={{overlay: {top: 220, maxWidth: 720, margin: '0 auto', backgroundColor: 'none'}}}>
+							<p>{address ? `${address}, ${detailAddress}` : '배송지를 등록하세요.'}</p>
+							<Button type='primary' onClick={toggle} ghost block>배송지 변경</Button>
+							<Modal isOpen={isOpen} style={{overlay: {top: 220, maxWidth: 720, margin: '0 auto', backgroundColor: 'none' }}} ariaHideApp={false}>
 								<Address />
+								<Button type='primary' onClick={() => setIsOpen(false)} style={{width: 500, display: 'block', margin: '0 auto'}} size='large' block>저장</Button>
 							</Modal>
 						</div>
 					</div>
@@ -219,7 +228,7 @@ function cart({ dataSet }) {
 			.order-address-wrap { padding: 20px; border: 1px solid #eee; }
 			.address-title { display: flex; align-items: baseline; }
 			h3 { padding-left: 4px; margin: 0; }
-			.address-wrap { padding-top: 12px; }
+			p { width: 220px; display: block; margin: 12px auto; }
 
 			.order-sum-wrap { background-color: rgb(250, 250, 250); border: 1px solid #eee; padding: 20px; }
 			.sum { display: flex; justify-content: space-between; }

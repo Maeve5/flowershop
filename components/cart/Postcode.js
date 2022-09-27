@@ -23,7 +23,6 @@ function Postcode({ value }) {
 			fullAddress += extraAddress !== '' ? ` (${extraAddress})` : '';
 		}
 
-
 		setAddress(fullAddress);
 		console.log(fullAddress); // e.g. '서울 성동구 왕십리로2길 20 (성수동1가)'
 	};
@@ -35,7 +34,7 @@ function Postcode({ value }) {
 	return (
 		<>
 			{/* <p>{address ? address : '배송지를 등록하세요.'}</p> */}
-			<Button type='primary' ghost block onClick={popup} size='large' icon={<SearchOutlined />} >{value}</Button>
+			<Button type='primary' ghost block value={address ? '재검색' : '검색'} onClick={popup} size='large' icon={<SearchOutlined />} ></Button>
 
 			<style jsx>{`
 			p { text-align: center; }
