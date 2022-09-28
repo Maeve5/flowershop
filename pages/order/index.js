@@ -1,50 +1,42 @@
 import React, { useState, useEffect } from 'react';
-import ContentWrap from '../components/ContentWrap';
-import API from '../modules/api';
+import ContentWrap from '../../components/ContentWrap';
+import API from '../../modules/api';
 import Link from 'next/link';
-import { Input } from 'antd';
+import { Button, Input } from 'antd';
+import router from 'next/router';
 
 function order({ dataSet }) {
 
 	// 데이터
+	// const [info, setInfo] = useState({});
 	const [name, setName] = useState('');
 	const [tel, setTel] = useState('');
 	const [email, setEmail] = useState('');
-	const [receiverName, setReceiverName] = useState('');
-	const [receiverTel, setReceiverTel] = useState('');
-	const [postcode, setPostcode] = useState('');
-	const [address, setAddress] = useState('');
-	const [detailAddress, setDetailAddress] = useState('');
 	const [isCoupon, setIsCoupon] = useState('');
 	const [couponCode, setCouponCode] = useState('');
 	const [paymentMethod, setPaymentMethod] = useState('');
 	const [deliveryMessage, setDeliveryMessage] = useState('');
 
-	let info = {};
-
+	let info = JSON.parse(localStorage.getItem('infos'));
 
 	useEffect(() => {
-
-		info = {
-			name: name,
-			tel: tel,
-			email: email,
-			receiverName: receiverName,
-			receiverTel: receiverTel,
-			postcode: postcode,
-			address: address,
-			detailAddress: detailAddress,
-			isCoupon: isCoupon ? isCoupon : null,
-			couponCode: couponCode ? couponCode : null,
-			paymentMethod: paymentMethod,
-			deliveryMessage: deliveryMessage ? deliveryMessage : null
-		}
+		// info.push(data);
+		console.log('info', info);
+	}, []);
+	
+	useEffect(() => {
+		info.name = name;
+		info.tel = tel;
+		info.email = email;
+		info.isCoupon = isCoupon;
+		info.couponCode = couponCode;
+		info.paymentMethod = paymentMethod;
+		info.deliveryMessage = deliveryMessage;
 
 		localStorage.setItem('infos', JSON.stringify(info));
-		console.log('info', info);
-		// localStorage.setItem('items', JSON.stringify(data));
+		// console.log('info', info);
 
-	}, [name, tel, email, receiverName, receiverTel, postcode, address, detailAddress, isCoupon, couponCode, paymentMethod, deliveryMessage]);
+	}, [name, tel, email, isCoupon, couponCode, paymentMethod, deliveryMessage]);
 
 
 
@@ -53,7 +45,9 @@ function order({ dataSet }) {
 			<div className='order-product-list'>
 				<h2>주문서</h2>
 				<div className='order-product'>
-					<h3>주문 상품</h3>
+					<div className='title'>
+						<h3>주문 상품</h3>
+					</div>
 					<div className='cart-list-wrap'>
 						{dataSet.map((row) => {
 							return (
@@ -81,7 +75,9 @@ function order({ dataSet }) {
 							)
 						})}
 					</div>
-					<h3>주문자 정보</h3>
+					<div className='title'>
+						<h3>주문자 정보</h3>
+					</div>
 					<div className='order-info-wrap'>
 						<div className='order-info'>
 							<div className='info'>보내는 분</div>
@@ -102,23 +98,36 @@ function order({ dataSet }) {
 							</div>
 						</div>
 					</div>
-					<h3>배송 정보</h3>
+					<div className='title'>
+						<h3>배송 정보</h3>
+					</div>
 					<div className='delivery-info-wrap'>
-						<div className='info'>배송지</div>
-						<div className='info-input'>배송 주소</div>
-						<div className='info'>상세 정보</div>
+						<div className='delivery-info'>
+							<div className='info'>배송지</div>
+							<div className='info-input'>{info.address}{info.detailAddress ? ', ' : ''}{info.detailAddress}</div>
+						</div>
+						<div className='delivery-info'>
+							<div className='info'>상세 정보</div>
+							<Button onClick={() => window.open('/order/receiverDetails')}>입력</Button>
+						</div>
 					</div>
 					<div className='pay-wrap'>
 						<div className='extra-info-wrap'>
-							<h3>쿠폰/적립금</h3>
+							<div className='title'>
+								<h3>쿠폰/적립금</h3>
+							</div>
 							<div className='discount-wrap'>
 								<div className='info'>쿠폰 적용</div>
 								<div className='info'>적립금 적용</div>
 							</div>
-							<h3>결제 수단</h3>
+							<div className='title'>
+								<h3>결제 수단</h3>
+							</div>
 							<div className='pay-method-wrap'>
 							</div>
-							<h3>개인정보 수집/제공</h3>
+							<div className='title'>
+								<h3>개인정보 수집/제공</h3>
+							</div>
 							<div className='privacy-info-wrap'>
 							</div>
 						</div>
@@ -130,9 +139,10 @@ function order({ dataSet }) {
 			</div>
 
 			<style jsx>{`
-			.order-product-list { max-width: 720px; margin: 0 auto; }
+			.order-product-list { min-width: 720px; margin: 0 auto; }
 			h2 { text-align: center; font-size: 36px; }
-			h3 { font-size: 20px; margin: 20px 0;  }
+			h3 { display: inline-block; color: rgb(0, 122, 79); margin: 10px 0; font-size: 20px; padding: 0 4px; }
+			.title { border-bottom: 1.4px solid #aaa; margin: 40px 0 10px 0; }
 
 			.cart-list { display: flex; justify-content: center; align-items: center; border-bottom: 1px solid #eee; padding: 8px 10px; }
 			.cart-image { margin-right: 8px; }
@@ -141,10 +151,10 @@ function order({ dataSet }) {
 			.cart-amount-wrap { display: flex; width: 120px; justify-content: center; }
 			.cart-sum-wrap { display: flex; width: 100px; justify-content: flex-end; margin-right: 8px; font-weight: 700; }
 
-			.order-info { display: flex; }
+			.order-info { display: flex; align-items: center; padding: 10px 0;  }
 			.info { width: 200px; padding: 0 10px; }
-			.info-input { width: 300px; }
-			.delivery-info-wrap { display: flex; }
+			.info-input { width: 500px; }
+			.delivery-info { display: flex; align-items: center; height: 32px; padding: 20px 0; }
 
 			.pay-wrap { display: flex; }
 			.extra-info-wrap { flex: 2; }

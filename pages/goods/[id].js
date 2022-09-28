@@ -220,4 +220,4 @@ export const getServerSideProps = async ({ params }) => {
 		console.log('e >> ', e);
 		return { props: {} }
 	}
-}
+};

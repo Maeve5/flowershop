@@ -4,9 +4,9 @@ import ContentWrap from '../components/ContentWrap';
 import { Divider } from 'antd';
 import API from '../modules/api';
 import GoodsList from '../components/index/GoodsList';
+import info from '../modules/info';
 
 function Home({ data }) {
-
 	return (
 		<ContentWrap>
 			<Divider orientation="left">전체상품</Divider>
@@ -19,7 +19,7 @@ function Home({ data }) {
 			`}</style>
 		</ContentWrap>
 	)
-}
+};
 
 export default React.memo(Home);
 
@@ -34,4 +34,4 @@ export const getServerSideProps = async () => {
 		console.log('e >> ', e);
 		return { props : { }}
 	}
-}
+};

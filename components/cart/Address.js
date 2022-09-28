@@ -4,11 +4,12 @@ import { useDaumPostcodePopup } from 'react-daum-postcode';
 import { SearchOutlined } from '@ant-design/icons';
 
 function Address() {
-	let info = {};
+	let info = [];
 	const open = useDaumPostcodePopup('https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js');
 	
 	// 데이터
 	const [name, setName] = useState('');
+	const [key, setKey] = useState(0);
 	const [tel, setTel] = useState('');
 	const [email, setEmail] = useState('');
 	const [receiverName, setReceiverName] = useState('');
@@ -20,7 +21,6 @@ function Address() {
 	const [couponCode, setCouponCode] = useState('');
 	const [paymentMethod, setPaymentMethod] = useState('');
 	const [deliveryMessage, setDeliveryMessage] = useState('');
-
 
 	//
 	const handleComplete = (data) => {
@@ -42,9 +42,12 @@ function Address() {
 		// e.g. '서울 성동구 왕십리로2길 20 (성수동1가)'
 	};
 	
+	
 	useEffect(() => {
 
+		const data = JSON.parse(localStorage.getItem('infos'));
 		info = {
+			key: key,
 			name: name,
 			tel: tel,
 			email: email,
@@ -60,13 +63,11 @@ function Address() {
 		}
 		
 		localStorage.setItem('infos', JSON.stringify(info));
-		// info = JSON.parse(localStorage.getItem('infos'));
-		// console.log('info', info);
 	}, [postcode, address, detailAddress]);
 
 	const popup = () => {
 		open({ onComplete: handleComplete });
-	}
+	};
 
 	return (
 		<>
