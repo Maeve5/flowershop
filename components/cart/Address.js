@@ -48,18 +48,9 @@ function Address() {
 		const data = JSON.parse(localStorage.getItem('infos'));
 		info = {
 			key: key,
-			name: name,
-			tel: tel,
-			email: email,
-			receiverName: receiverName,
-			receiverTel: receiverTel,
 			postcode: postcode,
 			address: address,
 			detailAddress: detailAddress,
-			isCoupon: isCoupon ? isCoupon : null,
-			couponCode: couponCode ? couponCode : null,
-			paymentMethod: paymentMethod,
-			deliveryMessage: deliveryMessage ? deliveryMessage : null
 		}
 		
 		localStorage.setItem('infos', JSON.stringify(info));

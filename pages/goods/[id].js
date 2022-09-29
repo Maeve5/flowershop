@@ -89,9 +89,7 @@ function Post({ data, images, details, options }) {
 									<Select
 										labelInValue
 										defaultValue='옵션을 선택하세요.'
-										style={{
-											width: 160
-										}}
+										style={{width: 160}}
 										onChange={(e) => setPrice(data.price+options[e.key].price)}
 									>
 										{options.map((row, idx) => {

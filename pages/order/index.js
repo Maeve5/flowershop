@@ -4,40 +4,74 @@ import API from '../../modules/api';
 import Link from 'next/link';
 import { Button, Input } from 'antd';
 import router from 'next/router';
+import OrderProducts from '../../components/order/OrderProducts';
+import OrderInfo from '../../components/order/OrderInfo';
+import ReceiverInfo from '../../components/order/ReceiverInfo';
+import PaymentMethod from '../../components/order/PaymentMethod';
+import PayAmount from '../../components/order/PayAmount';
+import CouponReserve from '../../components/order/CouponReserve';
+import orderDataState from '../../atom/orderDataState';
+import { useRecoilValue } from 'recoil';
 
 function order({ dataSet }) {
+	const orderData = useRecoilValue(orderDataState);
+	const { info, items } = orderData;
 
-	// 데이터
-	// const [info, setInfo] = useState({});
-	const [name, setName] = useState('');
-	const [tel, setTel] = useState('');
-	const [email, setEmail] = useState('');
-	const [isCoupon, setIsCoupon] = useState('');
-	const [couponCode, setCouponCode] = useState('');
-	const [paymentMethod, setPaymentMethod] = useState('');
-	const [deliveryMessage, setDeliveryMessage] = useState('');
+	console.log('paymentAmount', info.paymentAmount);
+	console.log('items', items);
 
-	let info = JSON.parse(localStorage.getItem('infos'));
+	// // 데이터
+	// // const [info, setInfo] = useState({});
+	// const [name, setName] = useState('');
+	// const [tel, setTel] = useState('');
+	// const [email, setEmail] = useState('');
+	// const [receiverName, setReceiverName] = useState('');
+	// const [receiverTel, setReceiverTel] = useState('');
+	// const [address, setAddress] = useState('');
+	// const [detailAddress, setDetailAddress] = useState('');
+	// const [isCoupon, setIsCoupon] = useState('');
+	// const [couponCode, setCouponCode] = useState('');
+	// const [paymentMethod, setPaymentMethod] = useState('');
+	// const [deliveryMessage, setDeliveryMessage] = useState('');
 
-	useEffect(() => {
-		// info.push(data);
-		console.log('info', info);
-	}, []);
-	
-	useEffect(() => {
-		info.name = name;
-		info.tel = tel;
-		info.email = email;
-		info.isCoupon = isCoupon;
-		info.couponCode = couponCode;
-		info.paymentMethod = paymentMethod;
-		info.deliveryMessage = deliveryMessage;
+	// const getLocalStorage = () => {
+	// 	const info1 = JSON.parse(localStorage.getItem('infos'));
+	// 	// localStorage의 데이터를 return에 사용
+	// 	setAddress(info1.address);
+	// 	setDetailAddress(info1.detailAddress);
+	// 	setReceiverName(info1.receiverName);
+	// 	setReceiverTel(info1.receiverTel);
+	// 	setDeliveryMessage(info1.deliveryMessage);
+	// };
 
-		localStorage.setItem('infos', JSON.stringify(info));
-		// console.log('info', info);
+	// // 브라우저가 로딩된 후에 localStorage 불러오기
+	// useEffect(() => {
+	// 	getLocalStorage();
+	// }, []);
 
-	}, [name, tel, email, isCoupon, couponCode, paymentMethod, deliveryMessage]);
+	// useEffect(() => {
+	// 	// console.log('info1', info1);
+	// 	// info1.name = name,
+	// 	// info1.tel = tel,
+	// 	// info1.email = email
+	// 	// info2 = {
+	// 	// 	name: name,
+	// 	// 	tel: tel,
+	// 	// 	email: email,
+	// 	// 	isCoupon: isCoupon,
+	// 	// 	couponCode: couponCode,
+	// 	// 	paymentMethod: paymentMethod,
+	// 	// }
+	// 	// console.log('info1', info1);
 
+	// }, [name, tel, email, isCoupon, couponCode, paymentMethod]);
+
+	const onClickPayment = () => {
+		// localStorage.setItem('infos', JSON.stringify(info1));
+		// const infos = {...info1, ...info2};
+		// localStorage.setItem('infos', JSON.stringify(infos));
+		// console.log('infos >> ', infos);
+	};
 
 
 	return (
@@ -45,95 +79,23 @@ function order({ dataSet }) {
 			<div className='order-product-list'>
 				<h2>주문서</h2>
 				<div className='order-product'>
-					<div className='title'>
-						<h3>주문 상품</h3>
-					</div>
-					<div className='cart-list-wrap'>
-						{dataSet.map((row) => {
-							return (
-								<div key={row.cartKey} className='cart-list'>
-									<div className='cart-image'>
-										<img
-											src={row.imageUrl}
-											alt={row.imageUrl}
-											width={80}
-										/>
-									</div>
-									<Link href={`/goods/${row.productKey}`}>
-										<a className='cart-product'>
-											{row.productName}
-										</a>
-									</Link>
-									<div className='cart-amount-wrap'>
-										수량 : {row.amount}
-									</div>
-									<div className='cart-sum-wrap'>
-										<div className='sum-value'>{(row.price * row.amount).toLocaleString('ko-KR')}</div>
-										<div className='sum-unit'>원</div>
-									</div>
-								</div>
-							)
-						})}
-					</div>
-					<div className='title'>
-						<h3>주문자 정보</h3>
-					</div>
-					<div className='order-info-wrap'>
-						<div className='order-info'>
-							<div className='info'>보내는 분</div>
-							<div className='info-input'>
-								<Input type='text' value={name} onChange={(e) => setName(e.target.value)} placeholder='ex) 홍길동' />
-							</div>
-						</div>
-						<div className='order-info'>
-							<div className='info'>휴대폰</div>
-							<div className='info-input'>
-								<Input type='tel' value={tel} onChange={(e) => setTel(e.target.value)} placeholder='ex) 01012345678' maxLength={11} />
-							</div>
-						</div>
-						<div className='order-info'>
-							<div className='info'>이메일</div>
-							<div className='info-input'>
-								<Input type='email' value={email} onChange={(e) => setEmail(e.target.value)} placeholder='ex) abc1234@flowershop.com' />
-							</div>
-						</div>
-					</div>
-					<div className='title'>
-						<h3>배송 정보</h3>
-					</div>
-					<div className='delivery-info-wrap'>
-						<div className='delivery-info'>
-							<div className='info'>배송지</div>
-							<div className='info-input'>{info.address}{info.detailAddress ? ', ' : ''}{info.detailAddress}</div>
-						</div>
-						<div className='delivery-info'>
-							<div className='info'>상세 정보</div>
-							<Button onClick={() => window.open('/order/receiverDetails')}>입력</Button>
-						</div>
-					</div>
-					<div className='pay-wrap'>
+					{/* <OrderProducts />
+					<OrderInfo />
+					<ReceiverInfo />
+					<div className='payment-wrap'>
 						<div className='extra-info-wrap'>
-							<div className='title'>
-								<h3>쿠폰/적립금</h3>
-							</div>
-							<div className='discount-wrap'>
-								<div className='info'>쿠폰 적용</div>
-								<div className='info'>적립금 적용</div>
-							</div>
-							<div className='title'>
-								<h3>결제 수단</h3>
-							</div>
-							<div className='pay-method-wrap'>
-							</div>
-							<div className='title'>
-								<h3>개인정보 수집/제공</h3>
-							</div>
-							<div className='privacy-info-wrap'>
+							<CouponReserve />
+							<PaymentMethod />
+							<div className='payment-amount-wrap'>
+								<PayAmount />
 							</div>
 						</div>
 						<div className='payment-wrap'>
 							<h3>결제 금액</h3>
 						</div>
+					</div> */}
+					<div className='payment-button'>
+						<Button type='primary' size='large' style={{ width: 300, height: 52 }} onClick={onClickPayment}>{info.paymentAmount}원 결제하기</Button>
 					</div>
 				</div>
 			</div>
@@ -154,11 +116,15 @@ function order({ dataSet }) {
 			.order-info { display: flex; align-items: center; padding: 10px 0;  }
 			.info { width: 200px; padding: 0 10px; }
 			.info-input { width: 500px; }
-			.delivery-info { display: flex; align-items: center; height: 32px; padding: 20px 0; }
+			.delivery-info-wrap { display: block; }
+			.delivery-info { display: flex; align-content: flex-start; padding: 10px 0; }
+			.receiver { padding: 4px 0; }
+			.receiver-button { padding: 10px 0; }
 
-			.pay-wrap { display: flex; }
+			.payment-wrap { display: flex; }
 			.extra-info-wrap { flex: 2; }
 			.payment-wrap { flex: 1; }
+			.payment-button { text-align: center; margin-top: 40px; }
 			`}</style>
 		</ContentWrap>
 	);
@@ -175,7 +141,6 @@ export const getServerSideProps = async () => {
 		return { props: { dataSet } }
 	}
 	catch (e) {
-		console.log('e >> ', e);
-		return { props: {} }
+		router.push('/cart');
 	}
 }

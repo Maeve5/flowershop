@@ -3,10 +3,11 @@ import { ConfigProvider } from 'antd';
 import koKR from 'antd/lib/locale/ko_KR';
 import '../styles/globals.css'
 import 'antd/dist/antd.css';
+import { RecoilRoot } from 'recoil';
 
 function MyApp({ Component, pageProps }) {
 	return (
-		<>
+		<RecoilRoot>
 			<Head>
 				<title>꽃#</title>
 
@@ -18,8 +19,7 @@ function MyApp({ Component, pageProps }) {
 			<ConfigProvider locale={koKR}>
 				<Component {...pageProps} />
 			</ConfigProvider>
-
-		</>
+		</RecoilRoot>
 	)
 }
 

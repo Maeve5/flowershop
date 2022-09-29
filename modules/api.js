@@ -4,7 +4,7 @@ const API = axios.create({
 	baseURL : 'https://bank-api.d-leaf.kr',
 	headers : {
 		'Content-Type' : 'application/json', 
-		'Authorization' : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZXNzaW9uSWQiOiJ6cG56d3RmdHd1IiwiaXNzIjoia2tvdGZhcm0iLCJzdWIiOiJhY2Nlc3MiLCJleHAiOjE2NjQ0MTE3NjUsImlhdCI6MTY2NDMyNTM2NX0.UehcwDr8Ql1HZPxDxn2ofeg157lc8MllGdePj6eoTos'
+		'Authorization' : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzZXNzaW9uSWQiOiJ5NHJiZGtyYzkyIiwiaXNzIjoia2tvdGZhcm0iLCJzdWIiOiJhY2Nlc3MiLCJleHAiOjE2NjQ1MDQ1ODAsImlhdCI6MTY2NDQxODE4MH0.ok4yQEkUfYusAMJe6WJ_px6vCYhuG4i7v-eESyMcqlI'
 	}
 });
 

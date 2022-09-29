@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import Modal from 'react-modal/lib/components/Modal';
 import ContentWrap from '../components/ContentWrap';
 import API from '../modules/api';
@@ -9,27 +9,21 @@ import { CloseOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import Amount from '../components/Amount';
 import Checkbox from '../components/cart/Checkbox';
 import Address from '../components/cart/Address';
+import { useRecoilState } from 'recoil';
+import orderDataState from '../atom/orderDataState';
 
 function cart({ dataSet }) {
+	// 주문 데이터
+	const [orderData, setOrderData] = useRecoilState(orderDataState);
+
 	// 장바구니 담긴 품목 데이터
 	const [data, setData] = useState(dataSet);
 
 	// 체크박스 체크 여부
 	const [checked, setChecked] = useState('Y');
 
-	// 체크된 항목
-	const filter = data.filter((row) => {
-		return row.isChecked === 'Y';
-	})
-
-	// 상품금액 합계
-	let total = 0;
-	filter.forEach((row) => {
-		total += (row.price * row.amount);
-	});
-
 	// 변경사항 조회
-	const getData = async () => {
+	const getData = useCallback(async () => {
 		try {
 			const res = await API.get('/v1/shop/cart');
 			// console.log('res >> ', res.data.dataSet);
@@ -39,7 +33,7 @@ function cart({ dataSet }) {
 		catch (e) {
 			console.log(e);
 		}
-	};
+	}, []);
 
 	useEffect(() => {
 		getData();
@@ -47,7 +41,7 @@ function cart({ dataSet }) {
 
 	// checkbox 상태 변경
 	const onChangeCheck = useCallback(async (cartKey, checked) => {
-		// 단일 선택, 전체 선택
+		// 단일 선택, 전체 선택 apiUrl
 		const apiUrl = ``;
 		if (cartKey) {
 			apiUrl = `/v1/shop/cart/check/${cartKey}`;
@@ -69,6 +63,23 @@ function cart({ dataSet }) {
 			console.log('e >> ', e)
 		}
 	}, []);
+
+	// 체크된 항목
+	const checkedItems = useMemo(() => {
+		return data.filter((row) => {
+			return row.isChecked === 'Y';
+		});
+	}, [data]);
+
+	// 단일 체크 -> 전체 체크 Y/N
+	useEffect(() => {
+		if (checkedItems.length === data.length) {
+			setChecked('Y');
+		}
+		else {
+			setChecked('N');
+		}
+	}, [checkedItems]);
 
 	// 수량 변경
 	const onChangeAmount = useCallback(async (cartKey, amount) => {
@@ -108,6 +119,33 @@ function cart({ dataSet }) {
 		}
 	}, []);
 
+	// 상품금액 합계
+	const productPrice = useMemo(() => {
+		let sum = 0;
+		checkedItems.forEach((row) => {
+			sum += (row.price) * (row.amount);
+		});
+		return sum;
+	}, [checkedItems]);
+
+
+	// 주문하기 버튼
+	const onClickOrder = () => {
+		// atom에 체크한 항목 저장
+		setOrderData({
+			...orderData,
+			info: {
+				productPrice: productPrice,
+				paymentAmount: productPrice + orderData.info.deliveryFee
+			},
+			items: checkedItems
+		});
+		// 주문 창으로 이동
+		router.push('/order');
+	};
+
+
+
 	// 주소 검색 창 모달
 	const [isOpen, setIsOpen] = useState(false);
 
@@ -117,7 +155,7 @@ function cart({ dataSet }) {
 	};
 
 	// 주소 받아오기
-	const [info, setInfo] = useState({});
+	const [Info, setInfo] = useState({});
 
 	useEffect(() => {
 		setInfo(JSON.parse(localStorage.getItem('infos')));
@@ -180,8 +218,8 @@ function cart({ dataSet }) {
 							<h3>배송지</h3>
 						</div>
 						<div className='address-wrap'>
-							<p>{info ? `${info.address}${info.detailAddress ? ', ' : ''}${info.detailAddress}` : '배송지를 등록하세요.'}</p>
-							<Button type='primary' onClick={toggle} ghost block>{info && info.address ? '배송지 등록' : '배송지 변경' }</Button>
+							<p>{Info && Info.address ? `${Info.address}${Info.detailAddress ? ', ' : ''}${Info.detailAddress}` : '배송지를 등록하세요.'}</p>
+							<Button type='primary' onClick={toggle} ghost block>{Info && Info.address ? '배송지 등록' : '배송지 변경'}</Button>
 							<Modal isOpen={isOpen} style={{ overlay: { top: 220, maxWidth: 720, margin: '0 auto', backgroundColor: 'none' } }} ariaHideApp={false}>
 								<Address onClick={onClickSave} />
 								<Button type='primary' onClick={onClickSave} style={{ width: 500, display: 'block', margin: '0 auto' }} size='large' block>저장</Button>
@@ -191,19 +229,19 @@ function cart({ dataSet }) {
 					<div className='order-sum-wrap'>
 						<div className='sum'>
 							<div>상품금액</div>
-							<div>{total.toLocaleString('ko-KR')} 원</div>
+							<div>{String(productPrice).toLocaleString('ko-KR')} 원</div>
 						</div>
 						<div className='sum-delivery'>
 							<div>배송비</div>
-							<div>+ 3,000 원</div>
+							<div>+ {orderData.info.deliveryFee.toLocaleString('ko-KR')} 원</div>
 						</div>
 						<div className='sum-price'>
 							<div>결제예정금액</div>
-							<div className='total-price'>{(total + 3000).toLocaleString('ko-KR')} 원</div>
+							<div className='total-price'>{String(productPrice + orderData.info.deliveryFee).toLocaleString('ko-KR')} 원</div>
 						</div>
 					</div>
 					<div className='order-button-wrap'>
-						<Button type='primary' block size='large' onClick={() => router.push('/order')} disabled={info && info.address ? false : true}>주문하기</Button>
+						<Button type='primary' block size='large' onClick={onClickOrder} disabled={Info && Info.address ? false : true}>주문하기</Button>
 					</div>
 				</div>
 			</div>
@@ -248,7 +286,7 @@ export const getServerSideProps = async () => {
 	try {
 		const res = await API.get('/v1/shop/cart');
 		console.log('res dataSet >> ', res.data.dataSet);
-		console.log('res >> ', res);
+		// console.log('res >> ', res);
 		const dataSet = await res.data.dataSet;
 		return { props: { dataSet } }
 	}

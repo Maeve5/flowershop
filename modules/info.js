@@ -4,19 +4,7 @@ function info() {
 
 	// 데이터
 	let [info, setInfo] = useState([]);
-	const [name, setName] = useState('');
-	const [key, setKey] = useState(0);
-	const [tel, setTel] = useState('');
-	const [email, setEmail] = useState('');
-	const [receiverName, setReceiverName] = useState('');
-	const [receiverTel, setReceiverTel] = useState('');
-	const [postcode, setPostcode] = useState('');
-	const [address, setAddress] = useState('');
-	const [detailAddress, setDetailAddress] = useState('');
-	const [isCoupon, setIsCoupon] = useState('');
-	const [couponCode, setCouponCode] = useState('');
-	const [paymentMethod, setPaymentMethod] = useState('');
-	const [deliveryMessage, setDeliveryMessage] = useState('');
+	const [name, key, tel, email, receiverName, receiverTel, postcode, address, detailAddress, isCoupon, couponCode, paymentMethod, deliveryMessage] = info;
 
 	info = {
 		key: key,

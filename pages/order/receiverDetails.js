@@ -1,42 +1,40 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Input, Radio, Space } from 'antd';
+import { Button, Input, Select } from 'antd';
 const { TextArea } = Input;
+const { Option } = Select;
 
 function receiverDetails() {
-	const [location, setLocation] = useState('문 앞');
-	const [door, setDoor] = useState('');
-	const [access, setAccess] = useState('공동현관 비밀번호');
-	// const [location, setLocation] = useState('문 앞');
 	const [receiverName, setReceiverName] = useState('');
 	const [receiverTel, setReceiverTel] = useState('');
+	const [message, setMessage] = useState('메세지 선택 (선택사항)');
 	const [deliveryMessage, setDeliveryMessage] = useState('');
-
-	const onChange = (e) => {
-		let name = e.target.name;
-		// console.log(e.target);
-		if (name === 'location') {
-			setLocation(e.target.value);
-			// console.log('location', location);
-		}
-		else if (name === 'access') {
-			setAccess(e.target.value);
-			// console.log('access', access);
-		}
-	};
 
 	useEffect(() => {
 		let info = JSON.parse(localStorage.getItem('infos'));
-		
+
 		info.receiverName = receiverName;
 		info.receiverTel = receiverTel;
 		info.deliveryMessage = deliveryMessage;
 
 		localStorage.setItem('infos', JSON.stringify(info));
-		// console.log('info', info);
 
 	}, [receiverName, receiverTel, deliveryMessage]);
 
+	const onChangeMessage = (e) => {
+		setMessage(e);
+		if (e !== '직접 입력') {
+			setDeliveryMessage(e);
+		}
+	};
 
+	const onClickCancel = () => {
+		setReceiverName('');
+		setReceiverTel('');
+		setDeliveryMessage('');
+		window.close();
+	}
+
+	console.log('message', message);
 	return (
 		<div className='content'>
 			<div className='item'>
@@ -50,70 +48,46 @@ function receiverDetails() {
 						<div className='info-title'>휴대폰</div>
 						<Input type='tel' maxLength={11} placeholder='휴대폰 번호' value={receiverTel} onChange={(e) => setReceiverTel(e.target.value)} />
 					</div>
-					<div className='info-item'>
-						<div className='info-title'>받으실 장소</div>
-						<div className='radio-location'>
-							<Radio.Group
-								onChange={onChange}
-								name='location'
-								value={location}
-							>
-								<Space direction='vertical'>
-									<Radio value='문 앞'>문 앞</Radio>
-									<Radio value='경비실'>경비실</Radio>
-									<Radio value='기타 장소'>기타 장소</Radio>
-								</Space>
-							</Radio.Group>
+					<div className='info-message'>
+						<Select
+							defaultValue='메세지 선택 (선택사항)'
+							style={{display: 'block'}}
+							value={message}
+							onChange={onChangeMessage}
+						>
+							<Option value='메세지 선택 (선택사항)'>메세지 선택 (선택사항)</Option>
+							<Option value='배송 전에 미리 연락바랍니다.'>배송 전에 미리 연락바랍니다.</Option>
+							<Option value='부재 시 경비실에 맡겨주세요.'>부재 시 경비실에 맡겨주세요.</Option>
+							<Option value='부재 시 문 앞에 놓아주세요.'>부재 시 문 앞에 놓아주세요.</Option>
+							<Option value='빠른 배송 부탁드립니다.'>빠른 배송 부탁드립니다.</Option>
+							<Option value='택배함에 보관해 주세요.'>택배함에 보관해 주세요.</Option>
+							<Option value='직접 입력'>직접 입력</Option>
+						</Select>
+						<div className='message-input'>
+							{message === '직접 입력' &&
+								<TextArea showCount maxLength={50} style={{ display: 'block' }} onChange={(e) => setDeliveryMessage(e.target.value)} />
+							}
 						</div>
 					</div>
-					{location === '문 앞' ?
-						<div className='info-item'>
-							<div className='info-title'>공동현관 출입방법</div>
-							<div className='radio-location'>
-								<Radio.Group onChange={onChange} name='access' value={access}>
-									<Space direction='vertical'>
-										<Radio value='공동현관 비밀번호'>
-											<div>공동현관 비밀번호</div>
-											{access === '공동현관 비밀번호' ? (<Input type='text' style={{ width: 400 }} placeholder='예: #1234*' value={deliveryMessage} onChange={(e) => setDeliveryMessage(e.target.value)} />) : null}
-										</Radio>
-										<Radio value='자유 출입 가능'>자유 출입 가능</Radio>
-										<Radio value='기타'>
-											<div>기타</div>
-											{access === '기타' ? (<TextArea rows={4} style={{ width: 400 }} placeholder='예: 연락처로 전화, 경비실로 호출 등' />) : null}
-										</Radio>
-									</Space>
-								</Radio.Group>
-							</div>
-						</div>
-						: location === '경비실' ?
-							<div className='info-item'>
-								<div className='info-title'>경비실 특이사항</div>
-								<TextArea rows={4} style={{ width: 400 }} placeholder='예: 경비실 위치 등 특이사항이 있을 경우 작성해주세요' />
-							</div>
-							: location === '기타 장소' ?
-								<div className='info-item'>
-									<div className='info-title'>기타 장소 세부 사항</div>
-									<TextArea rows={4} style={{ width: 400 }} placeholder='예: 계단 밑, 주택단지 앞 경비초소를 지나 A동 출입구'  value={deliveryMessage} onChange={(e) => setDeliveryMessage(e.target.value)} />
-								</div>
-								: null
-					}
 				</div>
 			</div>
 
 			<div className='button'>
-				<Button type='default' size='large' style={{ margin: '10px 4px'}} onClick block>취소</Button>
-				<Button type='primary' size='large' style={{ margin: '10px 4px'}} onClick block>저장</Button>
+				<Button type='default' style={{ margin: '4px' }} onClick={onClickCancel} block>취소</Button>
+				<Button type='primary' style={{ margin: '4px' }} onClick={() => window.close()} block>저장</Button>
 			</div>
 
 			<style jsx>{`
-			.content { max-width: 720px; margin: 40px auto; }
+			.content { max-width: 600px; margin: 40px auto; }
 			.item { margin: 20px; }
 			h2 { font-size: 24px; color: rgb(0, 122, 79); border-bottom: 1.4px solid #aaa; }
 			
 			.info-item { margin: 10px; padding-bottom: 10px; }
 			.info-title { font-size: 16px; padding: 8px 0; }
+			.info-message { padding: 18px 10px; border-top: 1.4px solid #aaa; }
+			.message-input { padding-top: 8px; }
 
-			.button { display: flex; }
+			.button { display: flex; padding: 0 10px; }
 			`}</style>
 		</div>
 	);
