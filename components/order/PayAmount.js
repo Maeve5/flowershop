@@ -11,7 +11,7 @@ function PayAmount() {
 			<div className='info-input'>
 				<div className='info'>
 					<div className='title'>상품구매금액</div>
-					<div className='text'>{data.info.paymentAmount.toLocaleString('ko-KR')} 원</div>
+					<div className='text'>{data.info.productPrice.toLocaleString('ko-KR')} 원</div>
 				</div>
 				<div className='info mid'>
 					<div className='title'>배송비</div>
