@@ -202,7 +202,7 @@ function cart({ dataSet }) {
 						</div>
 					</div>
 					<div className='order-button-wrap'>
-						<Button type='primary' block size='large' onClick={() => router.push('/order')} disabled={orderData.items ? false : true}>주문하기</Button>
+						<Button type='primary' block size='large' onClick={() => router.push('/order')} disabled={orderData.items.length === 0 ? true : false}>주문하기</Button>
 					</div>
 				</div>
 			</div>
@@ -245,7 +245,7 @@ export const getServerSideProps = async () => {
 	try {
 		const res = await API.get('/v1/shop/cart');
 		console.log('res dataSet >> ', res.data.dataSet);
-		// console.log('res >> ', res);
+		console.log('res >> ', res);
 		const dataSet = await res.data.dataSet;
 		return { props: { dataSet } }
 	}
