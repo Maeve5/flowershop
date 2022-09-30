@@ -6,12 +6,13 @@ const { TextArea } = Input;
 const { Option } = Select;
 
 function ReceiverInfo() {
-	const setInfo = useSetRecoilState(orderDataState);
-
 	// 수령인 정보
 	const [receiverName, setReceiverName] = useState('');
 	const [receiverTel, setReceiverTel] = useState('');
 	const [deliveryMessage, setDeliveryMessage] = useState('');
+	
+	// atom 저장
+	const setInfo = useSetRecoilState(orderDataState);
 
 	useEffect(() => {
 		setInfo((data) => {
@@ -50,7 +51,7 @@ function ReceiverInfo() {
 					<Select
 						defaultValue='메세지 선택 (선택사항)'
 						style={{ display: 'block' }}
-						// value={message}
+						value={message}
 						onChange={onChangeMessage}
 					>
 						<Option value='메세지 선택 (선택사항)'>메세지 선택 (선택사항)</Option>

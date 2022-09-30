@@ -4,12 +4,13 @@ import { useSetRecoilState } from 'recoil';
 import orderDataState from '../../atom/orderDataState';
 
 function OrderInfo() {
-	const setInfo = useSetRecoilState(orderDataState);
-
 	// 주문자 정보
 	const [name, setName] = useState('');
 	const [tel, setTel] = useState('');
 	const [email, setEmail] = useState('');
+	
+	// atom	저장
+	const setInfo = useSetRecoilState(orderDataState);
 
 	useEffect(() => {
 		setInfo((data) => {

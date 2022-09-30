@@ -1,10 +1,8 @@
 import React from 'react';
 import ContentWrap from '../components/ContentWrap';
-// import styles from '../styles/Home.module.css';
 import { Divider } from 'antd';
 import API from '../modules/api';
 import GoodsList from '../components/index/GoodsList';
-import info from '../modules/info';
 
 function Home({ data }) {
 	return (
@@ -15,7 +13,7 @@ function Home({ data }) {
 			</div>
 
 			<style jsx>{`
-			div { padding-left: 60px; }
+			div { max-width: 1000px; }
 			`}</style>
 		</ContentWrap>
 	)

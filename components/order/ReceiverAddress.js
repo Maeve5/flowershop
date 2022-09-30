@@ -6,20 +6,21 @@ import { useRecoilValue } from 'recoil';
 import orderDataState from '../../atom/orderDataState';
 
 function ReceiverAddress() {
-	const orderData = useRecoilValue(orderDataState);
+	// 배송지
+	const data = useRecoilValue(orderDataState);
 
-	// 주소 검색 창 모달
+	// 주소 검색 모달
 	const [isOpen, setIsOpen] = useState(false);
 
 	return (
 		<div className='address-wrap'>
 			<p>
-				{orderData.info.address ?
-				`${orderData.info.address}${orderData.info.detailAddress ? ', ' : ''}${orderData.info.detailAddress}`
+				{data.info.address ?
+				`${data.info.address}${data.info.detailAddress ? ', ' : ''}${data.info.detailAddress}`
 				: '배송지를 등록하세요.'}
 			</p>
 			<Button onClick={() => setIsOpen(!isOpen)}>
-				{orderData.info.address ? '변경' : '등록'}
+				{data.info.address ? '변경' : '등록'}
 			</Button>
 			<Modal isOpen={isOpen} style={{ overlay: { top: 220, maxWidth: 720, margin: '0 auto', backgroundColor: 'none' } }} ariaHideApp={false}>
 				<Address />

@@ -6,12 +6,13 @@ import { useSetRecoilState } from 'recoil';
 import orderDataState from '../../atom/orderDataState';
 
 function Address() {
-	const setInfo = useSetRecoilState(orderDataState);
-
-	// 데이터
+	// 주소 입력
 	const [postcode, setPostcode] = useState('');
 	const [address, setAddress] = useState('');
 	const [detailAddress, setDetailAddress] = useState('');
+	
+	// atom 저장
+	const setInfo = useSetRecoilState(orderDataState);
 
 	useEffect(() => {
 		setInfo((data) => {

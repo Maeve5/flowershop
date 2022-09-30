@@ -4,13 +4,13 @@ import orderDataState from '../../atom/orderDataState';
 import Link from 'next/link';
 
 function OrderProducts() {
-	const orderData = useRecoilValue(orderDataState);
-
+	// 주문 품목 리스트
+	const data = useRecoilValue(orderDataState);
+	
 	return (
 		<>
 			<div className='cart-list-wrap'>
-				{/* 주문할 품목 리스트 */}
-				{orderData.items.map((row) => {
+				{data.items.map((row) => {
 					return (
 						<div key={row.cartKey} className='cart-list'>
 							<div className='cart-image'>

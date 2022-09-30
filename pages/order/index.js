@@ -5,8 +5,7 @@ import router from 'next/router';
 import OrderProducts from '../../components/order/OrderProducts';
 import OrderInfo from '../../components/order/OrderInfo';
 import DeliveryInfo from '../../components/order/DeliveryInfo';
-import PaymentMethod from '../../components/order/PaymentMethod';
-import PayAmount from '../../components/order/PayAmount';
+import PaymentInfo from '../../components/order/PaymentInfo';
 import CouponReserve from '../../components/order/CouponReserve';
 import orderDataState from '../../atom/orderDataState';
 import { useRecoilValue } from 'recoil';
@@ -33,17 +32,14 @@ function order() {
 						<h3>배송 정보</h3>
 					</div>
 					<DeliveryInfo />
-					
+
+					<div className='payment-info'>
+						<h3>결제 정보</h3>
+					</div>
 					<div className='payment-wrap'>
-						<div className='extra-info-wrap'>
-							{/* <CouponReserve /> */}
-							<PaymentMethod />
-							<div className='payment-amount-wrap'>
-								{/* <PayAmount /> */}
-							</div>
-						</div>
-						<div className='payment-wrap'>
-							<h3>결제 금액</h3>
+						<PaymentInfo />
+						<div className='payment-amount-wrap'>
+							{/* <PayAmount /> */}
 						</div>
 					</div>
 					<div className='payment-button'>
@@ -62,9 +58,7 @@ function order() {
 			.info { width: 200px; padding: 0 10px; }
 			.info-input { width: 500px; }
 
-			.payment-wrap { display: flex; }
-			.extra-info-wrap { flex: 2; }
-			.payment-wrap { flex: 1; }
+			.payment-info { border-bottom: 1.4px solid #aaa; margin-bottom: 10px; }
 			.payment-button { text-align: center; margin-top: 40px; }
 			`}</style>
 		</ContentWrap >
