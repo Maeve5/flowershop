@@ -32,15 +32,6 @@ function Post({ data, images, details, options }) {
 		}
 	}, []);
 
-	// 장바구니 이동 모달
-	const handleOk = () => {
-		router.push('/cart');
-	};
-
-	const handleCancel = () => {
-		setIsModalOpen(false);
-	};
-
 	return (
 		<ContentWrap>
 			<article>
@@ -114,7 +105,7 @@ function Post({ data, images, details, options }) {
 								<Button type='primary' block size='large' onClick={showModal}>
 									장바구니 담기
 								</Button>
-								<Modal title='장바구니 담기 완료' open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+								<Modal title='장바구니 담기 완료' open={isModalOpen} onOk={() => router.push('/cart')} onCancel={() => setIsModalOpen(false)}>
 									장바구니로 이동하시겠습니까?
 								</Modal>
 							</div>

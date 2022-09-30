@@ -2,7 +2,6 @@ import React from 'react';
 import { Button } from 'antd';
 
 function ProductAcount({ amount, onClickAmount }) {
-
 	// 수량 증감
 	const handleDecresement = () => {
 		onClickAmount(amount - 1);

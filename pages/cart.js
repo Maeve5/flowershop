@@ -1,14 +1,12 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import Modal from 'react-modal/lib/components/Modal';
 import ContentWrap from '../components/ContentWrap';
 import API from '../modules/api';
 import Link from 'next/link';
 import router from 'next/router';
 import { Button, Divider } from 'antd';
-import { CloseOutlined, EnvironmentOutlined } from '@ant-design/icons';
+import { CloseOutlined } from '@ant-design/icons';
 import Amount from '../components/Amount';
 import Checkbox from '../components/cart/Checkbox';
-import Address from '../components/cart/Address';
 import { useRecoilState } from 'recoil';
 import orderDataState from '../atom/orderDataState';
 
@@ -128,43 +126,20 @@ function cart({ dataSet }) {
 		return sum;
 	}, [checkedItems]);
 
-
-	// 주문하기 버튼
-	const onClickOrder = () => {
-		// atom에 체크한 항목 저장
-		setOrderData({
-			...orderData,
-			info: {
-				productPrice: productPrice,
-				paymentAmount: productPrice + orderData.info.deliveryFee
-			},
-			items: checkedItems
-		});
-		// 주문 창으로 이동
-		router.push('/order');
-	};
-
-
-
-	// 주소 검색 창 모달
-	const [isOpen, setIsOpen] = useState(false);
-
-	// 모달 창 토글
-	const toggle = () => {
-		setIsOpen(!isOpen);
-	};
-
-	// 주소 받아오기
-	const [Info, setInfo] = useState({});
-
+	// atom에 체크한 항목 저장
 	useEffect(() => {
-		setInfo(JSON.parse(localStorage.getItem('infos')));
-	}, []);
-
-	const onClickSave = () => {
-		setIsOpen(false);
-		setInfo(JSON.parse(localStorage.getItem('infos')));
-	};
+		setOrderData((data) => {
+			return {
+				...data,
+				info: {
+					...data.info,
+					productPrice: productPrice,
+					paymentAmount: productPrice + orderData.info.deliveryFee,
+				},
+				items: checkedItems
+			};
+		});
+	}, [productPrice]);
 
 	return (
 		<ContentWrap>
@@ -212,36 +187,22 @@ function cart({ dataSet }) {
 					</div>
 				</div>
 				<div className='order-wrap'>
-					<div className='order-address-wrap'>
-						<div className='address-title'>
-							<EnvironmentOutlined />
-							<h3>배송지</h3>
-						</div>
-						<div className='address-wrap'>
-							<p>{Info && Info.address ? `${Info.address}${Info.detailAddress ? ', ' : ''}${Info.detailAddress}` : '배송지를 등록하세요.'}</p>
-							<Button type='primary' onClick={toggle} ghost block>{Info && Info.address ? '배송지 등록' : '배송지 변경'}</Button>
-							<Modal isOpen={isOpen} style={{ overlay: { top: 220, maxWidth: 720, margin: '0 auto', backgroundColor: 'none' } }} ariaHideApp={false}>
-								<Address onClick={onClickSave} />
-								<Button type='primary' onClick={onClickSave} style={{ width: 500, display: 'block', margin: '0 auto' }} size='large' block>저장</Button>
-							</Modal>
-						</div>
-					</div>
 					<div className='order-sum-wrap'>
 						<div className='sum'>
 							<div>상품금액</div>
-							<div>{String(productPrice).toLocaleString('ko-KR')} 원</div>
+							<div>{productPrice.toLocaleString('ko-KR')} 원</div>
 						</div>
 						<div className='sum-delivery'>
 							<div>배송비</div>
-							<div>+ {orderData.info.deliveryFee.toLocaleString('ko-KR')} 원</div>
+							<div>{orderData.info.deliveryFee.toLocaleString('ko-KR')} 원</div>
 						</div>
 						<div className='sum-price'>
 							<div>결제예정금액</div>
-							<div className='total-price'>{String(productPrice + orderData.info.deliveryFee).toLocaleString('ko-KR')} 원</div>
+							<div className='total-price'>{(productPrice + orderData.info.deliveryFee).toLocaleString('ko-KR')} 원</div>
 						</div>
 					</div>
 					<div className='order-button-wrap'>
-						<Button type='primary' block size='large' onClick={onClickOrder} disabled={Info && Info.address ? false : true}>주문하기</Button>
+						<Button type='primary' block size='large' onClick={() => router.push('/order')} disabled={orderData.items ? false : true}>주문하기</Button>
 					</div>
 				</div>
 			</div>
@@ -263,10 +224,8 @@ function cart({ dataSet }) {
 			.cart-sum-wrap { display: flex; width: 100px; justify-content: flex-end; margin-right: 8px; font-weight: 700; }
 
 			.order-wrap { width: 270px; padding-top: 53px; }
-			.order-address-wrap { padding: 20px; border: 1px solid #eee; }
-			.address-title { display: flex; align-items: baseline; }
+
 			h3 { padding-left: 4px; margin: 0; }
-			p { width: 220px; display: block; margin: 12px auto; }
 
 			.order-sum-wrap { background-color: rgb(250, 250, 250); border: 1px solid #eee; padding: 20px; }
 			.sum { display: flex; justify-content: space-between; }

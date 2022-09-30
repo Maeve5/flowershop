@@ -1,11 +1,32 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { Input } from 'antd';
+import { useSetRecoilState } from 'recoil';
+import orderDataState from '../../atom/orderDataState';
 
 function OrderInfo() {
+	const setInfo = useSetRecoilState(orderDataState);
+
+	// 주문자 정보
+	const [name, setName] = useState('');
+	const [tel, setTel] = useState('');
+	const [email, setEmail] = useState('');
+
+	useEffect(() => {
+		setInfo((data) => {
+			return {
+				...data,
+				info: {
+					...data.info,
+					name: name,
+					tel: tel,
+					email: email,
+				}
+			};
+		});
+	}, [name, tel, email]);
+
 	return (
 		<>
-			<div className='title'>
-				<h3>주문자 정보</h3>
-			</div>
 			<div className='order-info-wrap'>
 				<div className='order-info'>
 					<div className='info'>보내는 분</div>
@@ -26,6 +47,12 @@ function OrderInfo() {
 					</div>
 				</div>
 			</div>
+
+			<style jsx>{`
+			.order-info { display: flex; align-items: center; padding: 10px 0;  }
+			.info { width: 200px; padding: 0 10px; }
+			.info-input { width: 500px; }
+			`}</style>
 		</>
 	);
 };
